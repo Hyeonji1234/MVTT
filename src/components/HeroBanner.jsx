@@ -1,124 +1,99 @@
 "use client";
-
 import { useEffect, useState } from "react";
 
 export default function HeroBanner({ movies }) {
   const [index, setIndex] = useState(0);
+
   const movie = movies[index];
 
-  const next = () => {
-    setIndex((prev) => (prev + 1) % movies.length);
-  };
-
-  const prev = () => {
-    setIndex((prev) => (prev === 0 ? movies.length - 1 : prev - 1));
-  };
-
-  // 🎬 자동 슬라이드 (예고편 기준 약 12초)
   useEffect(() => {
-    const timer = setTimeout(next, 12000);
-    return () => clearTimeout(timer);
-  }, [index]);
+    const timer = setTimeout(() => {
+      setIndex((prev) => (prev + 1) % movies.length);
+    }, 8000);
 
-  if (!movie) return null;
+    return () => clearTimeout(timer);
+  }, [index, movies.length]);
 
   return (
     <section style={wrapper}>
-      {/* 🎥 예고편 or 이미지 */}
-      {movie.trailerKey ? (
-        <iframe
-          key={movie.trailerKey}
-          src={`https://www.youtube.com/embed/${movie.trailerKey}?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&modestbranding=1`}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          style={video}
-        />
-      ) : (
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
-          style={video}
-        />
-      )}
+      <iframe
+        src={`https://www.youtube.com/embed/${movie.trailerKey}?autoplay=1&mute=1&controls=0`}
+        allow="autoplay; encrypted-media"
+        style={videoBg}
+      />
 
-      {/* 어두운 그라데이션 */}
-      <div style={overlay} />
 
-      {/* 🎬 영화 정보 */}
       <div style={content}>
         <h1 style={title}>{movie.title}</h1>
         <p style={overview}>{movie.overview}</p>
-        <div style={meta}>
-          <span style={rating}>★ {movie.vote_average.toFixed(1)}</span>
-          <span style={year}>{movie.release_date?.slice(0, 4)}</span>
-        </div>
       </div>
 
-      {/* ⬅ ➡ 화살표 (아이콘만) */}
-      <button style={{ ...arrow, left: 24 }} onClick={prev}>‹</button>
-      <button style={{ ...arrow, right: 24 }} onClick={next}>›</button>
+      <button style={{ ...arrow, left: 20 }} onClick={() => setIndex((index - 1 + movies.length) % movies.length)}>
+        ‹
+      </button>
+      <button style={{ ...arrow, right: 20 }} onClick={() => setIndex((index + 1) % movies.length)}>
+        ›
+      </button>
 
-      {/* 인디케이터 */}
       <div style={dots}>
-        {movies.map((_, i) => (
-          <span
-            key={i}
-            style={{
-              ...dot,
-              opacity: i === index ? 1 : 0.3,
-            }}
-          />
-        ))}
+  	{movies.map((_, i) => (
+    	  <span
+      	     key={i}
+             style={{
+        	...dot,
+        	background: i === index ? "#ffffff" : "#555", // 흰색 / 회색
+      	     }}
+    	/>
+  	))}
       </div>
+
     </section>
   );
 }
-
 /* ================= 스타일 ================= */
 
 const wrapper = {
   position: "relative",
-  height: "520px",
+  width: "100%",
+  height: "600px",        
   background: "#000",
   overflow: "hidden",
 };
 
-const video = {
+const videoBg = {
   position: "absolute",
   inset: 0,
   width: "100%",
   height: "100%",
+  objectFit: "cover",   
   border: "none",
-  objectFit: "cover",
-};
-
-const overlay = {
-  position: "absolute",
-  inset: 0,
-  background:
-    "linear-gradient(to right, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0.1) 100%)",
+  zIndex: 0,
 };
 
 const content = {
   position: "absolute",
-  left: "60px",
-  bottom: "90px",
+  left: "40px",
+  bottom: "30px",
   maxWidth: "480px",
   color: "#fff",
   zIndex: 2,
 };
 
 const title = {
-  fontSize: "38px",
+  fontSize: "32px",
   fontWeight: 800,
-  marginBottom: "14px",
+  marginBottom: "8px",
 };
 
 const overview = {
-  fontSize: "14px",
-  lineHeight: 1.6,
-  opacity: 0.9,
-  marginBottom: "16px",
+  fontSize: "15px",
+  lineHeight: 1.5,
+  opacity: 0.85,
+  marginBottom: "14px",
+  display: "-webkit-box",
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
 };
 
 const meta = {
@@ -131,14 +106,12 @@ const rating = {
   padding: "6px 10px",
   borderRadius: "6px",
   fontWeight: 700,
-  fontSize: "13px",
 };
 
 const year = {
   background: "#222",
   padding: "6px 10px",
   borderRadius: "6px",
-  fontSize: "13px",
 };
 
 const arrow = {
@@ -167,4 +140,5 @@ const dot = {
   width: "26px",
   height: "3px",
   background: "#e50914",
+  cursor: "pointer",
 };

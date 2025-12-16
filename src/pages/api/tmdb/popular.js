@@ -1,14 +1,32 @@
 export default async function handler(req, res) {
-    try {
-        const apiKey = process.env.TMDB_API_KEY;
+    const apiKey = process.env.TMDB_API_KEY;
 
-        const response = await fetch(
-            `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR`
+    const popularRes = await fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR`
+    );
+    const popularData = await popularRes.json();
+
+    const moviesWithTrailer = [];
+
+    for (const movie of popularData.results) {
+        const videoRes = await fetch(
+            `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${apiKey}&language=ko-KR`
         );
-        const data = await response.json();
+        const videoData = await videoRes.json();
 
-        res.status(200).json(data);
-    } catch (e) {
-        res.status(500).json({ error: "Failed to fetch popular movies" });
+        const trailer = videoData.results.find(
+            (v) => v.site === "YouTube" && v.type === "Trailer"
+        );
+
+        if (trailer) {
+            moviesWithTrailer.push({
+                ...movie,
+                trailerKey: trailer.key,
+            });
+        }
+
+        if (moviesWithTrailer.length === 5) break;
     }
+
+    res.status(200).json(moviesWithTrailer);
 }
