@@ -7,7 +7,7 @@ export default function Header() {
         {/* 왼쪽: 로고 */}
         <div style={left}>
           <Link href="/" style={logo}>
-            SPO
+            SPOI
           </Link>
         </div>
 
@@ -15,7 +15,7 @@ export default function Header() {
         <nav style={center}>
           <Link href="/" style={menu}>영화</Link>
           <Link href="/" style={menu}>인기영화</Link>
-          <Link href="/spoiler" style={menuHot}>
+          <Link href="/spoiler" style={menu}>
             실시간 스포일러
           </Link>
         </nav>
