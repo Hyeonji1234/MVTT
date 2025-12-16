@@ -3,21 +3,25 @@ import Link from "next/link";
 export default function Header() {
   return (
     <header style={header}>
-      <div style={inner}>
-        {/* 로고 */}
-        <Link href="/" style={logo}>
-          SPO
-        </Link>
+      <div style={container}>
+        {/* 왼쪽: 로고 */}
+        <div style={left}>
+          <Link href="/" style={logo}>
+            SPO
+          </Link>
+        </div>
 
-        {/* 메뉴 */}
-        <nav style={nav}>
+        {/* 가운데: 메뉴 */}
+        <nav style={center}>
           <Link href="/" style={menu}>영화</Link>
           <Link href="/" style={menu}>인기영화</Link>
-          <Link href="/spoiler" style={menuHot}>🔥 실시간 스포일러</Link>
+          <Link href="/spoiler" style={menuHot}>
+            실시간 스포일러
+          </Link>
         </nav>
 
-        {/* 인증 */}
-        <div style={auth}>
+        {/* 오른쪽: 인증 */}
+        <div style={right}>
           <Link href="/login" style={login}>로그인</Link>
           <Link href="/signup" style={signup}>회원가입</Link>
         </div>
@@ -27,36 +31,46 @@ export default function Header() {
 }
 
 const header = {
-  position: "sticky",
-  top: 0,
-  zIndex: 1000,
-  background: "linear-gradient(180deg, #000, #111)",
+  width: "100%",
+  background: "linear-gradient(180deg, #000 0%, #111 100%)",
   borderBottom: "1px solid #222",
 };
 
-const inner = {
+const container = {
   maxWidth: "1200px",
   margin: "0 auto",
   padding: "14px 20px",
+  display: "grid",
+  gridTemplateColumns: "auto 1fr auto",
+  alignItems: "center",
+};
+
+const left = {
   display: "flex",
   alignItems: "center",
-  justifyContent: "space-between",
+};
+
+const center = {
+  display: "flex",
+  justifyContent: "center",
+  gap: "28px",
+};
+
+const right = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
 };
 
 const logo = {
+  color: "#e50914",
   fontSize: "22px",
   fontWeight: "800",
-  color: "#e50914",
   textDecoration: "none",
 };
 
-const nav = {
-  display: "flex",
-  gap: "20px",
-};
-
 const menu = {
-  color: "#ddd",
+  color: "#e5e5e5",
   textDecoration: "none",
   fontSize: "15px",
 };
@@ -68,22 +82,20 @@ const menuHot = {
   fontWeight: "600",
 };
 
-const auth = {
-  display: "flex",
-  gap: "10px",
-};
-
 const login = {
   color: "#fff",
   textDecoration: "none",
   fontSize: "14px",
+  padding: "6px 12px",
+  border: "1px solid #555",
+  borderRadius: "6px",
 };
 
 const signup = {
   color: "#fff",
   background: "#e50914",
-  padding: "6px 12px",
-  borderRadius: "6px",
   textDecoration: "none",
   fontSize: "14px",
+  padding: "6px 12px",
+  borderRadius: "6px",
 };
