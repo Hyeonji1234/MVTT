@@ -44,7 +44,7 @@ const card = {
   /* 🔥 핵심 */
   display: "flex",
   flexDirection: "column",
-  height: "360px", // 카드 전체 높이 고정
+  height: "340px", // 카드 전체 높이 고정
 };
 
 const posterWrap = {

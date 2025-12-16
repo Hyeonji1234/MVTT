@@ -4,21 +4,45 @@ import MovieGrid from "../components/MovieGrid";
 
 export default function Home() {
     const [movies, setMovies] = useState([]);
+    const [heroMovies, setHeroMovies] = useState([]);
 
     useEffect(() => {
         fetch("/api/tmdb/popular")
             .then((res) => res.json())
-            .then((data) => setMovies(data.results || []));
+            .then(async (data) => {
+                const results = data.results || [];
+                setMovies(results);
+
+                const trailers = [];
+
+                for (const movie of results) {
+                    if (trailers.length >= 5) break;
+
+                    try {
+                        const res = await fetch(`/api/video?movieId=${movie.id}`);
+                        const video = await res.json();
+
+                        if (video && video.key) {
+                            trailers.push({ ...movie, trailerKey: video.key });
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                setHeroMovies(trailers);
+            });
     }, []);
 
     return (
         <main style={{ background: "#000", color: "#fff" }}>
-            {/* 🔥 여기 중요 */}
-            <HeroBanner movies={movies.slice(0, 5)} />
+            <HeroBanner
+                movies={heroMovies.length ? heroMovies : movies.slice(0, 5)}
+            />
 
             <section style={section}>
                 <h2 style={sectionTitle}>인기 영화</h2>
-                <MovieGrid movies={movies.slice(5)} />
+                <MovieGrid movies={movies} />
             </section>
         </main>
     );
