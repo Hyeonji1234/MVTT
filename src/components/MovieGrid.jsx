@@ -1,9 +1,8 @@
-export default function MovieGrid({ movies }) {
+export default function MovieGrid({ movies = [] }) {
   return (
     <div style={grid}>
       {movies.map((m) => (
         <div key={m.id} style={card}>
-          {/* 포스터 */}
           <div style={posterWrap}>
             <img
               src={`https://image.tmdb.org/t/p/w342${m.poster_path}`}
@@ -12,15 +11,11 @@ export default function MovieGrid({ movies }) {
             />
           </div>
 
-          {/* 정보 */}
           <div style={info}>
             <div style={title}>{m.title}</div>
 
             <div style={meta}>
-              <span>
-                <span style={star}>★</span>
-                {m.vote_average.toFixed(1)}
-              </span>
+              <span style={rating}>★ {m.vote_average.toFixed(1)}</span>
               <span style={year}>{m.release_date?.slice(0, 4)}</span>
             </div>
           </div>
@@ -30,27 +25,23 @@ export default function MovieGrid({ movies }) {
   );
 }
 
+/* ================= 스타일 ================= */
+
 const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, 180px)",
-  gap: "18px",
+  display: "grid", 
+  gridTemplateColumns: "repeat(6, 1fr)", // ✅ 한 줄에 6개
+  gap: "20px",
 };
 
 const card = {
   background: "#111",
   borderRadius: "12px",
   overflow: "hidden",
-
-  /* 🔥 핵심 */
-  display: "flex",
-  flexDirection: "column",
-  height: "340px", // 카드 전체 높이 고정
 };
 
 const posterWrap = {
-  width: "180px",
-  height: "270px",
-  flexShrink: 0,
+  width: "100%",
+  aspectRatio: "2 / 3",
 };
 
 const poster = {
@@ -61,33 +52,26 @@ const poster = {
 
 const info = {
   padding: "10px",
-  display: "flex",
-  flexDirection: "column",
-  flex: 1, // 🔥 아래 영역 차지
 };
 
 const title = {
   fontSize: "14px",
-  fontWeight: "600",
+  fontWeight: 600,
   marginBottom: "6px",
-
-  /* 🔥 제목 2줄 제한 */
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
+  whiteSpace: "nowrap",
   overflow: "hidden",
+  textOverflow: "ellipsis",
 };
 
 const meta = {
   display: "flex",
   justifyContent: "space-between",
   fontSize: "13px",
-  marginTop: "auto", // 🔥 항상 아래로
 };
 
-const star = {
+const rating = {
   color: "#e50914",
-  marginRight: "4px",
+  fontWeight: 600,
 };
 
 const year = {

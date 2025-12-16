@@ -23,9 +23,11 @@ export default async function handler(req, res) {
                 ...movie,
                 trailerKey: trailer.key,
             });
+        } else {
+            moviesWithTrailer.push(movie);
         }
 
-        if (moviesWithTrailer.length === 5) break;
+        if (moviesWithTrailer.length >= 20) break;
     }
 
     res.status(200).json(moviesWithTrailer);

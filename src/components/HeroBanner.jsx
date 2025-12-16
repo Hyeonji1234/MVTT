@@ -41,7 +41,8 @@ export default function HeroBanner({ movies }) {
       	     key={i}
              style={{
         	...dot,
-        	background: i === index ? "#ffffff" : "#555", // 흰색 / 회색
+        	background: i === index ? "#e50914" : "#555", // 흰색 / 회색
+		opacity: i === index ? 1 : 0.6,
       	     }}
     	/>
   	))}

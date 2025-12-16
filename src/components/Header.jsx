@@ -14,7 +14,7 @@ export default function Header() {
         {/* 가운데: 메뉴 */}
         <nav style={center}>
           <Link href="/" style={menu}>영화</Link>
-          <Link href="/" style={menu}>인기영화</Link>
+          <Link href="/latest" style={menu}>최신영화</Link>
           <Link href="/spoiler" style={menu}>
             실시간 스포일러
           </Link>
