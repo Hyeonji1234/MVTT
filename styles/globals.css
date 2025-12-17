@@ -1,0 +1,17 @@
+/* src/styles/globals.css */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 헤더 높이만큼 아래 컨텐츠 밀기 */
+main {
+  padding-top: 64px;
+}

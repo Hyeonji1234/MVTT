@@ -1,0 +1,78 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: #0f0f0f; /* ❗ 완전 검정 */
+  z-index: 1000;
+}
+
+.inner {
+  max-width: 1400px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo a {
+  color: #e50914;
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+}
+
+.nav a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.nav a:hover {
+  color: white;
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login {
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.signup {
+  background: #e50914;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nickname {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.logout {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}

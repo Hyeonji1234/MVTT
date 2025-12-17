@@ -1,0 +1,160 @@
+.page {
+  background: #000;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 65px;
+}
+
+/* 배너 영역 */
+.backdrop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 520px;
+  background-size: cover;
+  background-position: center top;
+  z-index: 0;
+}
+
+/* ✅ 배너 그라데이션 오버레이 */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.45) 35%,
+    rgba(0, 0, 0, 0.85) 75%,
+    #000 100%
+  );
+}
+
+
+/* HEADER */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px 0;
+}
+
+.header {
+  display: flex;
+  gap: 40px;
+}
+
+.poster {
+  width: 260px;
+  border-radius: 12px;
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #f5f5f5;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  color: #ccc;
+}
+
+.star {
+  color: #e50914;
+  font-weight: 700;
+}
+
+.genres {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.genre {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #e5e5e5;
+}
+
+.subtitle {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #f5f5f5;
+}
+
+.overview {
+  margin-top: 8px;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+/* TRAILER */
+.trailerSection {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 32px;
+  background: linear-gradient(180deg, #1e1e1e, #0f0f0f);
+  border-radius: 16px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  margin-top: auto;
+  margin-bottom: 18px;
+  color: #e50914;
+  font-weight: 700;
+  text-shadow: #0f0f0f 1px 1px 0.3px;
+
+}
+
+
+.trailerTab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.6);
+  color: #e6e6e6; /* ⭐ 예전 느낌 */
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  margin-bottom: 18px;
+  margin-right: 5px;
+}
+
+.trailerTab:hover {
+  color: #fff;
+  border-color: #e50914;
+}
+
+.trailerTab:hover {
+  border-color: #e50914;
+  color: #fff;
+}
+
+.active {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+}
+
+.trailerFrame {
+  width: 100%;
+  height: 420px;
+  border-radius: 12px;
+  border: none;
+}
+
+.empty {
+  opacity: 0.6;
+}
