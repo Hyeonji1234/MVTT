@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 export default function Signup() {
   const router = useRouter();
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     passwordConfirm: "",
@@ -27,22 +27,26 @@ export default function Signup() {
       return;
     }
 
-    const res = await fetch("http://localhost:4000/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      }),
-    });
+    // signup.js 의 handleSignup 함수 부분 수정
+const res = await fetch("http://localhost:4000/auth/signup", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    username: form.username,
+    email: form.email,
+    password: form.password,
+  }),
+});
 
-    if (res.ok) {
-      alert("회원가입 성공!");
-      router.push("/login");
-    } else {
-      alert("회원가입 실패");
-    }
+const data = await res.json(); // 백엔드에서 보낸 응답 메시지 가져오기
+
+if (res.ok) {
+  alert("회원가입 성공!");
+  router.push("/login");
+} else {
+  // ✅ 단순히 "회원가입 실패"라고 띄우지 말고, 백엔드가 보낸 이유를 띄우세요.
+  alert(data.message || "회원가입 실패"); 
+};
   };
 
   return (
