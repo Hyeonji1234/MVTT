@@ -1,21 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASSWORD, // ⭐ 반드시 있어야 함
   database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
 });
 
-console.log("DB POOL ENV", {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-});
-
-export { pool };
+export default pool;

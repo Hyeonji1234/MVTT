@@ -1,30 +1,16 @@
-import dotenv from "dotenv";
-dotenv.config(); // ⭐⭐⭐ 이게 핵심 ⭐⭐⭐
-
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import authRouter from "./routes/auth.js";
 
-import authRoutes from "./routes/auth.js";
-
-
-
-console.log("ENV CHECK", {
-  DB_HOST: process.env.DB_HOST,
-  DB_USER: process.env.DB_USER,
-  DB_PASSWORD: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME,
-});
+dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.CORS_ORIGIN,
-  credentials: true,
-}));
-
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 app.use(express.json());
 
-app.use("/auth", authRoutes);
+app.use("/auth", authRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
