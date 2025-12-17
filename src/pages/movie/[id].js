@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import styles from "../../../styles/MovieDetail.module.css";
+import styles from "../../styles/MovieDetail.module.css";
 import Header from "../../components/Header";
 
 export default function MovieDetail() {

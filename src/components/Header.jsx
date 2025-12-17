@@ -7,7 +7,9 @@ export default function Header() {
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (stored) setUser(JSON.parse(stored));
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
   }, []);
 
   const logout = () => {
@@ -20,7 +22,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.logo}>
-          <Link href="/">SPOI</Link>
+          <Link href="/">SPO</Link>
         </div>
 
         <nav className={styles.nav}>
@@ -32,8 +34,8 @@ export default function Header() {
         <div className={styles.auth}>
           {user ? (
             <>
-              <span className={styles.nickname}>{user.nickname}</span>
-              <button onClick={logout} className={styles.logout}>
+              <span className={styles.nickname}>{user.username}</span>
+              <button className={styles.logout} onClick={logout}>
                 로그아웃
               </button>
             </>
