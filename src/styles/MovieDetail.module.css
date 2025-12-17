@@ -110,12 +110,12 @@
 }
 
 .sectionTitle {
-  font-size: 22px;
+  font-size: 23px;
   margin-top: auto;
   margin-bottom: 18px;
   color: #e50914;
   font-weight: 700;
-  text-shadow: #0f0f0f 1px 1px 0.3px;
+  text-shadow: rgb(219, 141, 141) 0px 0px 1px;
 
 }
 

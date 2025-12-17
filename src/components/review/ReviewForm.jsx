@@ -2,17 +2,26 @@ import { useState } from "react";
 import styles from "./ReviewSection.module.css";
 
 export default function ReviewForm({ movieId, onSuccess }) {
-  const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
+  const [content, setContent] = useState("");
   const [spoiler, setSpoiler] = useState(false);
 
   const submit = async () => {
-    if (!content.trim()) return;
+    const token = localStorage.getItem("token");
+    if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch("/api/reviews", {
+    await fetch("http://localhost:4000/reviews", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ movieId, content, rating, spoiler }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        movieId,
+        rating,
+        content,
+        spoiler,
+      }),
     });
 
     setContent("");
@@ -22,37 +31,35 @@ export default function ReviewForm({ movieId, onSuccess }) {
   };
 
   return (
-    <div className={styles.formCard}>
-      <h3>리뷰 작성</h3>
+    <div className={styles.writeCard}>
+      <div className={styles.ratingBox}>
+<div className={styles.ratingWrapper}>
+  <span className={styles.ratingText}>별점: </span>
 
-      <div className={styles.ratingRow}>
-  <label className={styles.label}>별점</label>
-
-  <div className={styles.selectWrap}>
-    <select
-      className={styles.select}
-      value={rating}
-      onChange={(e) => setRating(+e.target.value)}
-    >
-      {[1, 2, 3, 4, 5].map((v) => (
-        <option key={v} value={v}>
-          {"★".repeat(v)}
-        </option>
-      ))}
-    </select>
-
-    <span className={styles.chev}>▾</span>
-  </div>
+  <select
+    className={styles.ratingSelect}
+    value={rating}
+    onChange={(e) => setRating(Number(e.target.value))}
+  >
+    <option value={5}>★★★★★</option>
+    <option value={4}>★★★★☆</option>
+    <option value={3}>★★★☆☆</option>
+    <option value={2}>★★☆☆☆</option>
+    <option value={1}>★☆☆☆☆</option>
+  </select>
 </div>
+
+</div>
+
 
       <textarea
         className={styles.textarea}
-        placeholder="영화 리뷰를 작성해주세요..."
+        placeholder="리뷰를 작성하세요"
         value={content}
         onChange={e => setContent(e.target.value)}
       />
 
-      <div className={styles.formFooter}>
+      <div className={styles.writeFooter}>
         <label>
           <input
             type="checkbox"

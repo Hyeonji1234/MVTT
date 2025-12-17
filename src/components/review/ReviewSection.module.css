@@ -1,169 +1,201 @@
-/* ⭐ 화면 중앙 정렬 + 폭 제한 */
-.outer {
-  display: flex;
-  justify-content: center;
-  padding: 0 24px;        /* 좌우 여백 */
-  margin-bottom: 80px;   /* 아래 여백 */
+.wrapper {
+  max-width: 1200px;
+  margin: 20px auto 60px;
 }
 
-/* 실제 리뷰 카드 */
-.section {
-  width: 100%;
-  max-width: 1200px;      /* ⭐ 핵심 */
-  background: linear-gradient(180deg, #1e1e1e, #0f0f0f);
-  padding: 24px;
-  border-radius: 14px;
+.title {
+  font-size: 20px;
+  margin-bottom: 12px;
+  margin-left: 5px;
 }
 
-/* 헤더 */
-.header {
-  border-bottom: 1px solid #333;
-  padding-bottom: 14px;
-  margin-bottom: 24px;
+.writeCard {
+  background: #1f1f1f;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
 
-.header h2 {
-  font-size: 22px;
-}
-
-.header span {
-  color: #aaa;
-  font-size: 16px;
-}
-
-
-.formCard {
-  background: #222;
-  padding: 16px;
-  border-radius: 10px;
-  margin-bottom: 24px;
-}
-
-.row {
+.starRow {
   margin-bottom: 10px;
+}
+
+.star {
+  font-size: 22px;
+  color: #555;
+  cursor: pointer;
+}
+
+.star.active {
+  color: #e50914;
 }
 
 .textarea {
   width: 100%;
-  height: 80px;
+  height: 90px;
   background: #2a2a2a;
-  border: 1px solid #333;
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
   padding: 10px;
   color: #fff;
+  margin-top: 12px;
 }
 
-.formFooter {
+.writeFooter {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  color: #ccc;
+  font-size: 14px;
 }
 
 .submit {
   background: #e50914;
-  color: #fff;
   border: none;
-  padding: 6px 14px;
+  padding: 6px 16px;
+  color: white;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .filterBar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
-.card {
+.filterLeft button {
+  margin-right: 6px;
   background: #222;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.filterActive {
+  background: #e50914;
+  color: white;
+}
+
+.sort {
+  background: #222;
+  color: #ccc;
+}
+
+.reviewCard {
+  background: #1f1f1f;
   padding: 16px;
   border-radius: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
-.cardHeader {
+.reviewHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  font-size: 15px;
+  font-shadow: 0 0 1px #686868;
 }
 
-.rating {
+.score {
   color: #e50914;
 }
 
-.tags span {
-  color: #e50914;
-  margin-right: 6px;
+.reviewContent {
+  margin: 10px 0;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.reviewFooter {
+  display: flex;
+  justify-content: space-between;
   font-size: 12px;
+  color: #aaa;
 }
 
 .delete {
+  background: none;
   border: 1px solid #e50914;
   color: #e50914;
-  background: none;
-  padding: 4px 8px;
+  padding: 2px 8px;
   border-radius: 4px;
 }
-
-.content {
-  margin: 8px 0;
+/* 리뷰 전체를 감싸는 큰 박스 */
+.reviewBox {
+  background: #181818;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
+/* 별점 셀렉트 박스 */
 
-.date {
-  font-size: 12px;
-  color: #888;
-}
-
-.empty {
-  text-align: center;
-  color: #888;
-  padding: 30px 0;
-}
-.ratingRow {
+.ratingInner {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0 12px;
 }
 
-.label {
-  color: #ddd;
-  font-weight: 600;
-  min-width: 42px;
-}
 
-/* select 기본 UI 제거 + 커스텀 */
-.selectWrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-.select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background: #2a2a2a;
-  color: #e50914;
-  border: 1px solid #333;
-  border-radius: 8px;
-
-  padding: 8px 34px 8px 12px; /* 오른쪽 화살표 자리 */
-  font-weight: 600;
-  line-height: 1;
+/* 별 */
+.star {
+  font-size: 15px;
+  color: #555;
   cursor: pointer;
 }
 
-.select:focus {
-  outline: none;
-  border-color: #e50914;
-  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+
+.ratingText {
+  font-size: 14px;
+  color: #ccc;
 }
 
-.chev {
+/* 드롭다운 별점 박스 */
+.ratingSelect {
+  appearance: none;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 6px 25px 6px 12px;
+  color: #ff2f2f;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: auto;
+
+  /* 커스텀 화살표 */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23aaa' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><polygon points='5,7 10,12 15,7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  margin-left: auto;
+}
+
+.ratingSelect:hover {
+  border-color: #ff2f2f;
+}
+
+.ratingSelect option {
+  background: #222;
+  color: #fff;
+}
+.spoiler {
+  filter: blur(6px);
+  cursor: pointer;
+  position: relative;
+}
+
+.spoiler::after {
+  content: "스포일러 보기";
   position: absolute;
-  right: 10px;
-  pointer-events: none;
-  color: #bbb;
-  font-size: 12px;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff2f2f;
+  font-weight: bold;
+}
+.delete {
+  background: none;
+  border: 1px solid #ff2f2f;
+  color: #ff2f2f;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
 }

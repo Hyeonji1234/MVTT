@@ -1,19 +1,16 @@
 import jwt from "jsonwebtoken";
 
-export const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+export function authMiddleware(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth) return res.status(401).json({ message: "No token" });
 
-  if (!authHeader) {
-    return res.status(401).json({ message: "토큰 없음" });
-  }
-
-  const token = authHeader.split(" ")[1];
+  const token = auth.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id;
+    req.user = { id: decoded.id }; // ⭐ 핵심
     next();
-  } catch (err) {
-    return res.status(401).json({ message: "유효하지 않은 토큰" });
+  } catch {
+    return res.status(401).json({ message: "Invalid token" });
   }
-};
+}

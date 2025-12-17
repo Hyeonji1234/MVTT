@@ -6,35 +6,32 @@ export default function ReviewList({ movieId, refresh, onCountChange }) {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/reviews/${movieId}`)
+    fetch(`http://localhost:4000/reviews/${movieId}`)
       .then(res => res.json())
       .then(data => {
         setReviews(data);
-        onCountChange?.(data.length);  // ⭐ 여기!!
+        onCountChange(data.length);
       });
   }, [movieId, refresh]);
-
-  if (reviews.length === 0) {
-    return <div className={styles.empty}>아직 작성된 리뷰가 없습니다.</div>;
-  }
 
   return (
     <>
       <div className={styles.filterBar}>
-        <div>
-          <button className={styles.active}>전체</button>
+        <div className={styles.filterLeft}>
+          <button className={styles.filterActive}>전체</button>
           <button>스포일러</button>
           <button>일반</button>
         </div>
 
-        <select>
+        <select className={styles.sort}>
+          <option>별점 높은순</option>
+          <option>별점 낮은순</option>
           <option>최신순</option>
-          <option>별점순</option>
         </select>
       </div>
 
       {reviews.map(r => (
-        <ReviewCard key={r.id} review={r} />
+        <ReviewCard key={r.id} review={r} onDelete={() => setRefresh(v => v + 1)}/>
       ))}
     </>
   );
