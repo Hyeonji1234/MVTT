@@ -34,7 +34,7 @@ export default function Header() {
         <div className={styles.auth}>
           {user ? (
             <>
-              <span className={styles.nickname}>{user.username}</span>
+              <span className={styles.nickname}>{user.nickname}</span>
               <button className={styles.logout} onClick={logout}>
                 로그아웃
               </button>

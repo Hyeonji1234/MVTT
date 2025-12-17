@@ -6,57 +6,49 @@ import { useState } from "react";
 export default function Signup() {
   const router = useRouter();
   const [form, setForm] = useState({
-    nickname: "",
+    name: "",
     email: "",
     password: "",
-    password2: "",
+    passwordConfirm: "",
   });
-  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
 
-  const onChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setMsg("");
+    setError("");
 
-    if (!form.nickname || !form.email || !form.password || !form.password2) {
-      setMsg("모든 항목을 입력해주세요.");
-      return;
-    }
-    if (form.password.length < 6) {
-      setMsg("비밀번호는 최소 6자 이상이어야 합니다.");
-      return;
-    }
-    if (form.password !== form.password2) {
-      setMsg("비밀번호가 일치하지 않습니다.");
+    if (form.password !== form.passwordConfirm) {
+      setError("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     try {
       const res = await fetch("http://localhost:4000/auth/signup", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    username,
-    email,
-    password,
-  }),
-});
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,        // ✅ 백엔드에서 nickname으로 매핑됨
+          email: form.email,
+          password: form.password,
+        }),
+      });
 
-
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json();
 
       if (!res.ok) {
-        setMsg(data?.message || "회원가입 실패");
+        setError(data.message || "회원가입 실패");
         return;
       }
 
-      // 성공 -> 로그인 페이지로
-      router.push("/login");
+      // 토큰 저장(원하면 cinema21 방식대로 localStorage/cookie 선택)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      router.push("/"); // 홈으로
     } catch (err) {
-      setMsg("서버 연결 실패(백엔드 실행 상태 확인)");
+      setError("서버 연결 실패(백엔드 실행 상태 확인)");
     }
   };
 
@@ -65,65 +57,60 @@ export default function Signup() {
       <Header />
       <div className={styles.container}>
         <div className={styles.card}>
-          <h1 className={styles.title}>회원가입</h1>
+          <div className={styles.title}>회원가입</div>
 
           <form onSubmit={handleSignup}>
             <label className={styles.label}>사용자 이름</label>
             <input
               className={styles.input}
-              name="nickname"
-              placeholder="사용자 이름을 입력하세요"
-              value={form.nickname}
+              name="name"
+              value={form.name}
               onChange={onChange}
+              placeholder="사용자 이름을 입력하세요"
             />
 
             <label className={styles.label}>이메일</label>
             <input
               className={styles.input}
               name="email"
-              type="email"
-              placeholder="이메일을 입력하세요"
               value={form.email}
               onChange={onChange}
+              placeholder="이메일을 입력하세요"
             />
 
             <label className={styles.label}>비밀번호</label>
             <input
               className={styles.input}
-              name="password"
               type="password"
-              placeholder="비밀번호를 입력하세요 (최소 6자)"
+              name="password"
               value={form.password}
               onChange={onChange}
+              placeholder="비밀번호를 입력하세요 (최소 6자)"
             />
 
             <label className={styles.label}>비밀번호 확인</label>
             <input
               className={styles.input}
-              name="password2"
               type="password"
-              placeholder="비밀번호를 다시 입력하세요"
-              value={form.password2}
+              name="passwordConfirm"
+              value={form.passwordConfirm}
               onChange={onChange}
+              placeholder="비밀번호를 다시 입력하세요"
             />
 
-            {msg && (
-              <div style={{ color: "#ff5a5a", fontSize: 13, marginBottom: 12 }}>
-                {msg}
-              </div>
-            )}
+            {error && <div style={{ color: "#e50914", marginBottom: 12 }}>{error}</div>}
 
             <button className={styles.button} type="submit">
               회원가입
             </button>
-
-            <div className={styles.footerText}>
-              이미 계정이 있으신가요?{" "}
-              <span className={styles.link} onClick={() => router.push("/login")}>
-                로그인
-              </span>
-            </div>
           </form>
+
+          <div className={styles.footerText}>
+            이미 계정이 있으신가요?{" "}
+            <span className={styles.link} onClick={() => router.push("/login")}>
+              로그인
+            </span>
+          </div>
         </div>
       </div>
     </>

@@ -103,6 +103,7 @@
 .trailerSection {
   max-width: 1200px;
   margin: 60px auto;
+  margin-bottom: 15px;
   padding: 32px;
   background: linear-gradient(180deg, #1e1e1e, #0f0f0f);
   border-radius: 16px;
