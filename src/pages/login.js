@@ -1,39 +1,45 @@
 import Header from "../components/Header";
 import styles from "../styles/Auth.module.css";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [msg, setMsg] = useState("");
 
-  const handleLogin = async () => {
-    setError("");
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setMsg("");
+
+    if (!form.email || !form.password) {
+      setMsg("이메일/비밀번호를 입력해주세요.");
+      return;
+    }
 
     try {
       const res = await fetch("http://localhost:4000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data.message);
+        setMsg(data?.message || "로그인 실패");
         return;
       }
 
-      // ✅ JWT + 유저 정보 저장
+      // 토큰 저장(일단 localStorage)
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // 홈으로 이동
-      router.push("/");
+      router.push("/movie"); // 필요하면 홈으로 바꿔도 됨
     } catch (err) {
-      setError("서버 연결 실패");
+      setMsg("서버 연결 실패(백엔드 실행 상태 확인)");
     }
   };
 
@@ -44,35 +50,44 @@ export default function Login() {
         <div className={styles.card}>
           <h1 className={styles.title}>로그인</h1>
 
-          <label className={styles.label}>이메일</label>
-          <input
-            className={styles.input}
-            placeholder="이메일을 입력하세요"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <form onSubmit={handleLogin}>
+            <label className={styles.label}>이메일</label>
+            <input
+              className={styles.input}
+              type="email"
+              name="email"
+              placeholder="이메일을 입력하세요"
+              value={form.email}
+              onChange={onChange}
+            />
 
-          <label className={styles.label}>비밀번호</label>
-          <input
-            className={styles.input}
-            type="password"
-            placeholder="비밀번호를 입력하세요"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <label className={styles.label}>비밀번호</label>
+            <input
+              className={styles.input}
+              type="password"
+              name="password"
+              placeholder="비밀번호를 입력하세요"
+              value={form.password}
+              onChange={onChange}
+            />
 
-          {error && <p style={{ color: "#e50914" }}>{error}</p>}
+            {msg && (
+              <div style={{ color: "#ff5a5a", fontSize: 13, marginBottom: 12 }}>
+                {msg}
+              </div>
+            )}
 
-          <button className={styles.button} onClick={handleLogin}>
-            로그인
-          </button>
+            <button className={styles.button} type="submit">
+              로그인
+            </button>
 
-          <div className={styles.footerText}>
-            계정이 없으신가요?{" "}
-            <span className={styles.link} onClick={() => router.push("/signup")}>
-              회원가입
-            </span>
-          </div>
+            <div className={styles.footerText}>
+              계정이 없으신가요?{" "}
+              <span className={styles.link} onClick={() => router.push("/signup")}>
+                회원가입
+              </span>
+            </div>
+          </form>
         </div>
       </div>
     </>

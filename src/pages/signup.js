@@ -1,52 +1,63 @@
 import Header from "../components/Header";
 import styles from "../styles/Auth.module.css";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Signup() {
   const router = useRouter();
   const [form, setForm] = useState({
-    username: "",
+    nickname: "",
     email: "",
     password: "",
-    passwordConfirm: "",
+    password2: "",
   });
+  const [msg, setMsg] = useState("");
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+  const onChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setMsg("");
 
-    if (form.password !== form.passwordConfirm) {
-      alert("비밀번호가 일치하지 않습니다.");
+    if (!form.nickname || !form.email || !form.password || !form.password2) {
+      setMsg("모든 항목을 입력해주세요.");
+      return;
+    }
+    if (form.password.length < 6) {
+      setMsg("비밀번호는 최소 6자 이상이어야 합니다.");
+      return;
+    }
+    if (form.password !== form.password2) {
+      setMsg("비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    // signup.js 의 handleSignup 함수 부분 수정
-const res = await fetch("http://localhost:4000/auth/signup", {
+    try {
+      const res = await fetch("http://localhost:4000/auth/signup", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    username: form.username,
-    email: form.email,
-    password: form.password,
+    username,
+    email,
+    password,
   }),
 });
 
-const data = await res.json(); // 백엔드에서 보낸 응답 메시지 가져오기
 
-if (res.ok) {
-  alert("회원가입 성공!");
-  router.push("/login");
-} else {
-  // ✅ 단순히 "회원가입 실패"라고 띄우지 말고, 백엔드가 보낸 이유를 띄우세요.
-  alert(data.message || "회원가입 실패"); 
-};
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setMsg(data?.message || "회원가입 실패");
+        return;
+      }
+
+      // 성공 -> 로그인 페이지로
+      router.push("/login");
+    } catch (err) {
+      setMsg("서버 연결 실패(백엔드 실행 상태 확인)");
+    }
   };
 
   return (
@@ -60,9 +71,10 @@ if (res.ok) {
             <label className={styles.label}>사용자 이름</label>
             <input
               className={styles.input}
-              name="name"
+              name="nickname"
               placeholder="사용자 이름을 입력하세요"
-              onChange={handleChange}
+              value={form.nickname}
+              onChange={onChange}
             />
 
             <label className={styles.label}>이메일</label>
@@ -71,7 +83,8 @@ if (res.ok) {
               name="email"
               type="email"
               placeholder="이메일을 입력하세요"
-              onChange={handleChange}
+              value={form.email}
+              onChange={onChange}
             />
 
             <label className={styles.label}>비밀번호</label>
@@ -80,27 +93,37 @@ if (res.ok) {
               name="password"
               type="password"
               placeholder="비밀번호를 입력하세요 (최소 6자)"
-              onChange={handleChange}
+              value={form.password}
+              onChange={onChange}
             />
 
             <label className={styles.label}>비밀번호 확인</label>
             <input
               className={styles.input}
-              name="passwordConfirm"
+              name="password2"
               type="password"
               placeholder="비밀번호를 다시 입력하세요"
-              onChange={handleChange}
+              value={form.password2}
+              onChange={onChange}
             />
 
-            <button className={styles.button}>회원가입</button>
-          </form>
+            {msg && (
+              <div style={{ color: "#ff5a5a", fontSize: 13, marginBottom: 12 }}>
+                {msg}
+              </div>
+            )}
 
-          <p className={styles.footerText}>
-            이미 계정이 있으신가요?{" "}
-            <span className={styles.link} onClick={() => router.push("/login")}>
-              로그인
-            </span>
-          </p>
+            <button className={styles.button} type="submit">
+              회원가입
+            </button>
+
+            <div className={styles.footerText}>
+              이미 계정이 있으신가요?{" "}
+              <span className={styles.link} onClick={() => router.push("/login")}>
+                로그인
+              </span>
+            </div>
+          </form>
         </div>
       </div>
     </>
