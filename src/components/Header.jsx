@@ -32,7 +32,7 @@ export default function Header() {
         <nav className={styles.nav}>
           <Link href="/">영화</Link>
           <Link href="/latest">최신영화</Link>
-          <Link href="/spoiler">실시간 스포일러</Link>
+          <Link href="/spoilers">실시간 스포일러</Link>
         </nav>
 
         <div className={styles.auth}>

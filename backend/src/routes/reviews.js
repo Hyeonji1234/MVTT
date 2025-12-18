@@ -33,11 +33,11 @@ function requireUser(req, res, next) {
 }
 
 /**
- * GET /reviews/:movieId
- * - like_count, liked(내가 눌렀는지), tags(스포일러 태그들) 포함
+ * 🔥 GET /reviews/spoilers
+ * 모든 영화의 스포일러 리뷰 (최신순)
+ * ⚠️ 반드시 /:movieId 보다 위에 있어야 함
  */
-router.get("/:movieId", optionalUser, async (req, res) => {
-  const movieId = Number(req.params.movieId);
+router.get("/spoilers", optionalUser, async (req, res) => {
   const myId = req.user?.id || null;
 
   try {
@@ -60,9 +60,62 @@ router.get("/:movieId", optionalUser, async (req, res) => {
       LEFT JOIN review_likes rl ON rl.review_id = r.id
       LEFT JOIN review_tags rt ON rt.review_id = r.id
       LEFT JOIN tags t ON t.id = rt.tag_id
-      WHERE r.movie_id = ?
+      WHERE r.is_spoiler = 1
       GROUP BY r.id
       ORDER BY r.created_at DESC
+      LIMIT 50
+      `,
+      [myId]
+    );
+
+    const result = rows.map((r) => ({
+      ...r,
+      like_count: Number(r.like_count) || 0,
+      liked: Number(r.liked) === 1,
+      tags: r.tags ? r.tags.split(",") : [],
+    }));
+
+    res.json(result);
+  } catch (err) {
+    console.error("SPOILERS GET ERROR:", err);
+    res.status(500).json({ message: "스포일러 조회 실패" });
+  }
+});
+
+/**
+ * GET /reviews/:movieId
+ * - like_count, liked(내가 눌렀는지), tags(스포일러 태그들) 포함
+ */
+router.get("/:movieId", optionalUser, async (req, res) => {
+  const movieId = Number(req.params.movieId);
+  const myId = req.user?.id || null;
+
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT
+        r.id,
+        r.movie_id,
+        m.title AS movie_title,   -- ⭐ 추가
+        r.user_id,
+        u.nickname AS username,
+        r.rating,
+        r.content,
+        r.is_spoiler,
+        r.created_at,
+        COUNT(DISTINCT rl.id) AS like_count,
+        MAX(CASE WHEN rl.user_id = ? THEN 1 ELSE 0 END) AS liked,
+        GROUP_CONCAT(DISTINCT t.name ORDER BY t.id SEPARATOR ',') AS tags
+      FROM reviews r
+      JOIN movies m ON r.movie_id = m.id      -- ⭐ 추가
+      JOIN users u ON r.user_id = u.id
+      LEFT JOIN review_likes rl ON rl.review_id = r.id
+      LEFT JOIN review_tags rt ON rt.review_id = r.id
+      LEFT JOIN tags t ON t.id = rt.tag_id
+      WHERE r.is_spoiler = 1
+      GROUP BY r.id
+      ORDER BY r.created_at DESC
+      LIMIT 50
       `,
       [myId, movieId]
     );

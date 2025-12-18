@@ -11,7 +11,12 @@ function getMyIdFromToken() {
   }
 }
 
-export default function ReviewCard({ review, onDeleteSuccess, onUpdateSuccess }) {
+export default function ReviewCard({ 
+  review, 
+  onDeleteSuccess, 
+  onUpdateSuccess,
+  onTagClick, 
+}) {
   const token = localStorage.getItem("token");
   const myId = useMemo(() => getMyIdFromToken(), []);
 
@@ -95,7 +100,12 @@ export default function ReviewCard({ review, onDeleteSuccess, onUpdateSuccess })
           {review.is_spoiler === 1 && tagList.length > 0 && (
             <div className={styles.spoilerTags}>
               {tagList.map((t) => (
-                <span key={t} className={styles.spoilerTag}>
+                <span 
+                key={t}
+                className={styles.spoilerTag}
+                onClick={() => onTagClick?.(t)}
+                style={{cursor: "pointer"}}
+              >
                   #{t}
                 </span>
               ))}

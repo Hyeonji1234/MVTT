@@ -227,3 +227,66 @@
   color: #aaa;
   padding: 18px 0;
 }
+
+/* =========================
+   리뷰 필터 탭 (전체 / 스포일러 / 일반)
+========================= */
+.filterTabs {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 10px;
+}
+
+.tab {
+  padding: 6px 14px;
+  border-radius: 18px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  border-color: #e50914;
+  color: #fff;
+}
+
+.active {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+}
+
+/* =========================
+   스포일러 태그 필터
+========================= */
+.tagFilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 16px;
+}
+
+.tagBtn {
+  padding: 4px 12px;
+  border-radius: 14px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tagBtn:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.activeTag {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+  color: #fff;
+}
