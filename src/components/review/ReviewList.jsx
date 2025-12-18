@@ -18,7 +18,7 @@ export default function ReviewList({
 
     const token = localStorage.getItem("token");
 
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${movieId}`, {
+    fetch(`${API_BASE}/reviews/${movieId}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
       .then((res) => res.json())

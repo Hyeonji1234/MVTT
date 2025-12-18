@@ -60,7 +60,7 @@ export default function ReviewCard({
   const deleteReview = async () => {
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${review.id}`, {
+    await fetch(`${API_BASE}/reviews/${review.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -71,7 +71,7 @@ export default function ReviewCard({
   const save = async () => {
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${review.id}`, {
+    await fetch(`${API_BASE}/reviews/${review.id}/like`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
