@@ -1,20 +1,22 @@
-import express from "express";
-import pool from "../db.js";
-
-const router = express.Router();
-
-/**
- * GET /tags
- * return: [{id, name}, ...]
- */
-router.get("/", async (_req, res) => {
-  try {
-    const [rows] = await pool.query("SELECT id, name FROM tags ORDER BY id");
-    res.json(rows); // ✅ 배열
-  } catch (err) {
-    console.error("TAGS GET ERROR:", err);
-    res.status(500).json({ message: "태그 조회 실패" });
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
-});
 
-export default router;
+  try {
+    const headers = {};
+    if (req.headers.authorization) {
+      headers.Authorization = req.headers.authorization;
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags`,
+      { headers }
+    );
+
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (e) {
+    res.status(500).json({ message: "Tags proxy error" });
+  }
+}
