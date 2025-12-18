@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import HeroBanner from "../components/HeroBanner";
 import MovieGrid from "../components/MovieGrid";
+import SpoilerWarningModal from "../components/SpoilerWarningModal";
 
 export default function Home() {
   const [heroMovies, setHeroMovies] = useState([]);
@@ -17,6 +18,8 @@ export default function Home() {
 
   return (
     <main style={{ background: "#000", color: "#fff" }}>
+      <SpoilerWarningModal />
+      
       {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
       <section style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
