@@ -10,11 +10,17 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
+    if (!spoiler) return;
+
     fetch("/api/tags")
-      .then((res) => res.json())
-      .then(setTags)
-      .catch(console.error);
-  }, []);
+      .then(res => res.json())
+      .then((data) => {
+        console.log("태그 응답:", data);
+        setTags(Array.isArray(data) ? data : []);
+    })
+    .catch(console.error);
+  }, [spoiler]);
+
 
 
   const toggleTag = (id) => {
