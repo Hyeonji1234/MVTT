@@ -26,7 +26,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.logo}>
-          <Link href="/">SPO</Link>
+          <Link href="/">SPOILER</Link>
         </div>
 
         <nav className={styles.nav}>
@@ -39,9 +39,10 @@ export default function Header() {
           {user ? (
             <>
               <span className={styles.nickname}>{user.nickname}</span>
-              <button className={styles.logout} onClick={logout}>
+              <span className={styles.logout} onClick={logout} role="button" tabIndex={0}>
                 로그아웃
-              </button>
+              </span>
+
             </>
           ) : (
             <>

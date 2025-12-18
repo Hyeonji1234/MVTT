@@ -66,13 +66,24 @@
 }
 
 .nickname {
-  color: #ddd;
-  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+  margin-right: 8px;
 }
 
 .logout {
-  background: none;
-  border: none;
-  color: #aaa;
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.logout:hover {
+  border-color: #e50914;
+  color: #e50914;
 }
