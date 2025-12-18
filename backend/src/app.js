@@ -4,9 +4,11 @@ dotenv.config();
 import cors from "cors";
 app.use(
   cors({
-  origin: true,
-  credentials: true,
-}));
+    origin: "*",   
+  })
+);
+
+app.options("*", cors());
 
 import express from "express";
 

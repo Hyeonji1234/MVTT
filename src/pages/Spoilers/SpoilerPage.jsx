@@ -11,13 +11,16 @@ export default function SpoilerPage() {
   console.log("spoilers:", spoilers);
   console.log(
   spoilers.map(r => ({ id: r.id, isNew: r.isNew }))
+  
 );
+console.log("API BASE =", process.env.NEXT_PUBLIC_API_BASE_URL);
   console.log(spoilers[0]?.tags);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
   // 🔴 실시간 폴링 (30초)
   useEffect(() => {
     const fetchSpoilers = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/spoilers`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/spoilers`  , {
       cache: "no-store",
       });
 
