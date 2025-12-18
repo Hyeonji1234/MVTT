@@ -5,7 +5,7 @@ export default function SpoilerCard({ review }) {
   return (
     <div
       className={`${styles.card} ${
-        review.isNew ? styles.highlight : ""
+        review?.isNew ? styles.highlight : ""
       }`}
     >
       {/* 🎬 영화 제목 */}
