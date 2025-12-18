@@ -7,17 +7,36 @@ import cors from "cors";
 
 const router = express.Router();
 
-/* ⭐ 이 두 줄이 핵심 */
-router.use(cors());
-router.options("*", cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
 
-const signToken = (user) => {
-  const payload = { id: user.id, email: user.email, nickname: user.nickname };
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  });
+    if (
+      origin === "https://mvtt.vercel.app" ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+router.use(cors(corsOptions));
+router.options("*", cors(corsOptions));
+
+function signToken(user) {
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  );
+}
 
 // ✅ 회원가입
 router.post("/signup", async (req, res) => {

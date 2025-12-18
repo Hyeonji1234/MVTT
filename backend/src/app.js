@@ -12,31 +12,26 @@ import moviesRouter from "./routes/movies.js";
 
 const app = express();
 
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (
+      origin === "https://mvtt.vercel.app" ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 app.set("trust proxy", 1);
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // 서버 간 호출 (Postman 등)
-      if (!origin) return callback(null, true);
-
-      // 모든 Vercel 배포 도메인 허용
-      if (
-        origin === "https://mvtt.vercel.app" ||
-        origin.endsWith(".vercel.app")
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-app.options("*", cors());
-
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(morgan("dev"));
 app.use(express.json());
