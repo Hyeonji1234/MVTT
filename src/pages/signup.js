@@ -3,6 +3,8 @@ import styles from "../styles/Auth.module.css";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function Signup() {
   const router = useRouter();
   const [form, setForm] = useState({
