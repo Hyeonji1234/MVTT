@@ -4,14 +4,14 @@ export default function SpoilerWarningModal() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const confirmed = localStorage.getItem("spoilerWarningConfirmed");
+    const confirmed = sessionStorage.getItem("spoilerWarningConfirmed");
     if (!confirmed) {
       setOpen(true);
     }
   }, []);
 
   const handleConfirm = () => {
-    localStorage.setItem("spoilerWarningConfirmed", "true");
+    sessionStorage.setItem("spoilerWarningConfirmed", "true");
     setOpen(false);
   };
 
