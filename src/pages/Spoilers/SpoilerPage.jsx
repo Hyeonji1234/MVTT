@@ -23,14 +23,15 @@ export default function SpoilerPage() {
 
       const data = await res.json();
 
-      setSpoilers(prev => {
-        const prevIds = new Set(prev.map(r => r.id));
-        return data.map(r => ({
-          ...r,
-          isNew: !prevIds.has(r.id), // ⭐ 하이라이트 핵심
-        }));
-      });
+    setSpoilers(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const prevIds = new Set(safePrev.map(r => r.id));
 
+      return (data ?? []).map(r => ({
+        ...r,
+        isNew: !prevIds.has(r.id),
+      }));
+    });
       setLastFetchTime(Date.now());
     };
 
