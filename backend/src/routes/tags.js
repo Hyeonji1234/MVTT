@@ -1,21 +1,21 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+import express from "express";
+import pool from "../db.js";
 
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
+const router = express.Router();
 
+router.get("/tags", async (req, res) => {
   try {
-    const response = await fetch(`${API_BASE}/tags`);
+    const [rows] = await pool.query(
+      "SELECT id, name FROM tags ORDER BY id"
+    );
 
-    if (!response.ok) {
-      return res.status(response.status).json([]);
-    }
+    console.log("✅ TAGS ROWS:", rows);
 
-    const data = await response.json();
-    return res.status(200).json(Array.isArray(data) ? data : []);
-  } catch (e) {
-    console.error("❌ /api/tags error:", e);
-    return res.status(200).json([]);
+    return res.json(rows);
+  } catch (err) {
+    console.error("❌ TAGS ERROR:", err);
+    return res.status(500).json([]);
   }
-}
+});
+
+export default router;
