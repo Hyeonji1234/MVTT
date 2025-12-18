@@ -1,4 +1,7 @@
-import SpoilerCard from "./SpoilerCard";
+import styles from "./SpoilerPage.module.css";
+
+import SpoilerCard from "../../components/Spoilers/SpoilerCard";
+
 
 export default function SpoilerList({ spoilers }) {
   if (!spoilers.length) {
