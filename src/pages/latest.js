@@ -16,12 +16,12 @@ export default function Latest() {
         <main style={{ background: "#000", color: "#fff" }}>
             <section
                 style={{
-                    maxWidth: "1200px",
+                    maxWidth: "1400px",
                     margin: "0 auto",
                     padding: "40px 20px",
                 }}
             >
-                <h2>최신 영화</h2>
+                <h2 style={{ margin: "0 0 20px 40px" }}>최신 영화</h2>
                 <MovieGrid movies={movies} />
             </section>
         </main>

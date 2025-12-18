@@ -45,7 +45,7 @@ export default function SpoilerPage() {
   });
 
   return (
-    <div style={{ maxWidth: 900, margin: "40px auto" }}>
+    <div style={{ maxWidth: 900, margin: "100px auto" }}>
       <h1 style={{ color: "#fff" }}>실시간 스포일러</h1>
 
       <SpoilerFilterBar

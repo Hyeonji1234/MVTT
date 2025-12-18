@@ -19,8 +19,8 @@ export default function Home() {
     <main style={{ background: "#000", color: "#fff" }}>
       {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
-      <section style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-        <h2>인기 영화</h2>
+      <section style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
+        <h2 style={{ margin: "0 0 20px 40px" }}>인기 영화</h2>
         <MovieGrid movies={movies} />
       </section>
     </main>
