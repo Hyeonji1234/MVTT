@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     // 2️⃣ backend에 영화 저장 요청 ⭐⭐⭐
     if (data?.id && data?.title) {
-      await fetch("http://localhost:4000/movies/upsert", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/movies/upsert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -10,7 +10,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/tags")
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tags`)
       .then((res) => res.json())
       .then(setTags)
       .catch(console.error);
@@ -27,7 +27,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
     const token = localStorage.getItem("token");
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch("http://localhost:4000/reviews", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

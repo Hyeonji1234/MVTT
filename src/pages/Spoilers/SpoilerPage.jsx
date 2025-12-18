@@ -17,7 +17,7 @@ export default function SpoilerPage() {
   // 🔴 실시간 폴링 (30초)
   useEffect(() => {
     const fetchSpoilers = async () => {
-      const res = await fetch("http://localhost:4000/reviews/spoilers", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/spoilers`, {
       cache: "no-store",
       });
 
