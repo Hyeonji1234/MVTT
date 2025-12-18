@@ -1,5 +1,4 @@
 import styles from "../../pages/Spoilers/SpoilerPage.module.css";
-
 import Link from "next/link";
 
 export default function SpoilerCard({ review }) {

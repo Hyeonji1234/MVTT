@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import SpoilerFilterBar from "./SpoilerFilterBar";
-import SpoilerList from "./SpoilerList";
+import SpoilerFilterBar from "../../components/Spoilers/SpoilerFilterBar";
+import SpoilerList from "../../components/Spoilers/SpoilerList";
 import styles from "./SpoilerPage.module.css";
 
 export default function SpoilerPage() {
