@@ -4,15 +4,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const headers = {};
-
-    if (req.headers.authorization) {
-      headers.Authorization = req.headers.authorization;
-    }
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags`,
-      { headers }
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags`
     );
 
     const data = await response.json();
