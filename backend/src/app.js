@@ -12,24 +12,20 @@ import moviesRouter from "./routes/movies.js";
 
 const app = express();
 
-app.use(cors());
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-  );
+/* ⭐ Render + Vercel 필수 */
+app.set("trust proxy", 1);
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+/* ⭐ CORS 단일 설정 (중요) */
+app.use(
+  cors({
+    origin: "https://mvtt.vercel.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-  next();
-});
+/* ⭐ Preflight 처리 */
+app.options("*", cors());
 
 app.use(morgan("dev"));
 app.use(express.json());
