@@ -47,10 +47,11 @@ export default function ReviewCard({
   const toggleLike = async () => {
     if (!token) return alert("로그인이 필요합니다.");
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${review.id}/like`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+   const res = await fetch(`/api/reviews/${review.id}/like`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+   });
+
     const data = await res.json();
 
     setLiked(data.liked);
@@ -60,7 +61,7 @@ export default function ReviewCard({
   const deleteReview = async () => {
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch(`${API_BASE}/reviews/${review.id}`, {
+    await fetch(`/api/reviews/${review.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -71,20 +72,19 @@ export default function ReviewCard({
   const save = async () => {
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch(`${API_BASE}/reviews/${review.id}/like`, {
+    await fetch(`/api/reviews/${review.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        rating,
-        content,
-        is_spoiler: review.is_spoiler,
-        tag_ids: [], // (수정화면에서 태그 편집까지 하려면 여기 확장)
-      }),
+    },
+    body: JSON.stringify({
+      rating,
+      content,
+      is_spoiler: review.is_spoiler,
+      tag_ids: [],
+    }),
     });
-
     setEditing(false);
     onUpdateSuccess?.();
   };
