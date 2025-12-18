@@ -1,7 +1,17 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
 import dotenv from "dotenv";
+dotenv.config();
+
+import cors from "cors";
+app.use(
+  cors({
+  origin: true,
+  credentials: true,
+}));
+
+import express from "express";
+
+import morgan from "morgan";
+
 
 import authRouter from "./routes/auth.js";
 import reviewsRouter from "./routes/reviews.js";
@@ -15,7 +25,7 @@ import pool from "./db.js";
   console.log("✅ CONNECTED DB:", rows[0].db);
 })();
 
-dotenv.config();
+
 
 const app = express();
 
@@ -23,11 +33,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use(
-  cors({
-  origin: true,
-  credentials: true,
-}));
+
 
 
 app.get("/", (_req, res) => res.send("SPO Backend OK"));
