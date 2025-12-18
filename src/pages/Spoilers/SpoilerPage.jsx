@@ -3,6 +3,8 @@ import SpoilerFilterBar from "../../components/Spoilers/SpoilerFilterBar";
 import SpoilerList from "../../components/Spoilers/SpoilerList";
 import styles from "./SpoilerPage.module.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function SpoilerPage() {
   const [spoilers, setSpoilers] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
@@ -15,12 +17,11 @@ export default function SpoilerPage() {
 );
 console.log("API BASE =", process.env.NEXT_PUBLIC_API_BASE_URL);
   console.log(spoilers[0]?.tags);
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+  
   // 🔴 실시간 폴링 (30초)
   useEffect(() => {
     const fetchSpoilers = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/spoilers`  , {
+      const res = await fetch(`${API_BASE}/reviews/spoilers` , {
       cache: "no-store",
       });
 
