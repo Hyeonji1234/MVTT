@@ -1,107 +1,195 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./ReviewSection.module.css";
 
-export default function ReviewCard({ review, onDelete }) {
-  // 🔹 (1) 스포일러 상태
+function getMyIdFromToken() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    return JSON.parse(atob(token.split(".")[1])).id;
+  } catch {
+    return null;
+  }
+}
+
+export default function ReviewCard({ review, onDeleteSuccess, onUpdateSuccess }) {
+  const token = localStorage.getItem("token");
+  const myId = useMemo(() => getMyIdFromToken(), []);
+
+  const [liked, setLiked] = useState(!!review.liked);
+  const [likeCount, setLikeCount] = useState(review.like_count || 0);
+
+  const [editing, setEditing] = useState(false);
+  const [content, setContent] = useState(review.content);
+  const [rating, setRating] = useState(review.rating);
+
   const [showSpoiler, setShowSpoiler] = useState(false);
 
-  // 🔹 (2) 로그인 유저 id (로그인 시 localStorage에 저장돼 있다고 가정)
-  const user = JSON.parse(localStorage.getItem("user"));
-  const myId = user?.id;
+  useEffect(() => {
+    setLiked(!!review.liked);
+    setLikeCount(review.like_count || 0);
+  }, [review.liked, review.like_count]);
 
-  // 🔹 (3) 리뷰 삭제 함수
-  const handleDelete = async () => {
-    const token = localStorage.getItem("token");
-    if (!confirm("리뷰를 삭제할까요?")) return;
+  const stars = "★".repeat(review.rating) + "☆".repeat(5 - review.rating);
+
+  const tagList = Array.isArray(review.tags)
+  ? review.tags
+  : typeof review.tags === "string" && review.tags.length > 0
+    ? review.tags.split(",")
+    : [];
+
+
+
+  const toggleLike = async () => {
+    if (!token) return alert("로그인이 필요합니다.");
+
+    const res = await fetch(`http://localhost:4000/reviews/${review.id}/like`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+
+    setLiked(data.liked);
+    setLikeCount(data.like_count);
+  };
+
+  const deleteReview = async () => {
+    if (!token) return alert("로그인이 필요합니다.");
 
     await fetch(`http://localhost:4000/reviews/${review.id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
-    onDelete(); // 목록 새로고침
+    onDeleteSuccess?.();
   };
 
-  const [likeCount, setLikeCount] = useState(review.likeCount || 0);
-  const [liked, setLiked] = useState(false);
-  
-  const toggleLike = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("로그인이 필요합니다.");
-    return;
-  }
+  const save = async () => {
+    if (!token) return alert("로그인이 필요합니다.");
 
-  await fetch(
-    `http://localhost:4000/reviews/${review.id}/like`,
-    {
-      method: "POST",
+    await fetch(`http://localhost:4000/reviews/${review.id}`, {
+      method: "PUT",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    }
-  );
+      body: JSON.stringify({
+        rating,
+        content,
+        is_spoiler: review.is_spoiler,
+        tag_ids: [], // (수정화면에서 태그 편집까지 하려면 여기 확장)
+      }),
+    });
 
-  setLiked((prev) => !prev);
-  setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-};
+    setEditing(false);
+    onUpdateSuccess?.();
+  };
 
-
-  
-  console.log("review.user_id:", review.user_id);
-  console.log("myId:", myId);
-
+  console.log("is_spoiler:", review.is_spoiler, "tags:", review.tags);
 
   return (
     <div className={styles.reviewCard}>
-      {/* ===== 상단: 닉네임 + 별점 ===== */}
       <div className={styles.reviewHeader}>
-        <strong>{review.nickname}</strong>
-        <span className={styles.score}>
-          {"★".repeat(review.rating)}
-        </span>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ fontWeight: 700 }}>{review.username}</div>
+
+          {review.is_spoiler === 1 && tagList.length > 0 && (
+            <div className={styles.spoilerTags}>
+              {tagList.map((t) => (
+                <span key={t} className={styles.spoilerTag}>
+                  #{t}
+                </span>
+              ))}
+            </div>
+          )}
+
+        </div>
+
+        <div className={styles.score}>
+          {stars} {review.rating}점
+        </div>
       </div>
 
-      {/* ===== 본문: 스포일러 처리 ===== */}
-      <p
-        className={
-          review.is_spoiler && !showSpoiler
-            ? styles.spoiler
-            : ""
-        }
-        onClick={() => {
-          if (review.is_spoiler) setShowSpoiler(true);
-        }}
-      >
-        {review.content}
-      </p>
+      {!editing ? (
+        <div
+          className={`${styles.reviewContent} ${
+            review.is_spoiler && !showSpoiler ? styles.spoiler : ""
+          }`}
+          onClick={() => review.is_spoiler && setShowSpoiler(true)}
+          title={review.is_spoiler && !showSpoiler ? "클릭하면 스포일러를 볼 수 있어요" : ""}
+        >
+          {review.content}
+        </div>
+      ) : (
+        <>
+          <select
+            className={styles.ratingSelect}
+            value={rating}
+            onChange={(e) => setRating(Number(e.target.value))}
+          >
+            <option value={5}>★★★★★ 5점</option>
+            <option value={4}>★★★★☆ 4점</option>
+            <option value={3}>★★★☆☆ 3점</option>
+            <option value={2}>★★☆☆☆ 2점</option>
+            <option value={1}>★☆☆☆☆ 1점</option>
+          </select>
 
-      {/* ===== 하단: 작성일 + 좋아요/삭제 ===== */}
-      
+          <textarea
+            className={styles.textarea}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </>
+      )}
+
       <div className={styles.reviewFooter}>
-        <span>{new Date(review.created_at).toLocaleDateString()}</span>
+        <span>{(review.created_at || "").slice(0, 10)}</span>
 
         <div className={styles.actions}>
-          <button
-            className={styles.like}
-            onClick={toggleLike}
-          >
-            ❤️ {likeCount}
+          <button className={styles.like} onClick={toggleLike} type="button">
+            {liked ? "❤️" : "🤍"} <span style={{ marginLeft: 6 }}>{likeCount}</span>
           </button>
-    {/* 🔥 본인 리뷰일 때만 삭제 버튼 */}
-    {review.user_id === myId && (
-      <button
-        className={styles.delete}
-        onClick={handleDelete}
-      >
-        삭제
-      </button>
-    )}
-  </div>
-</div>
 
+          {myId === review.user_id && (
+            <>
+              {!editing ? (
+                <>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.editBtn}`}
+                    onClick={() => setEditing(true)}
+                  >
+                    수정
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                    onClick={deleteReview}
+                  >
+                    삭제
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.editBtn}`}
+                    onClick={save}
+                  >
+                    저장
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                    onClick={() => setEditing(false)}
+                  >
+                    취소
+                  </button>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

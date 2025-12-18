@@ -1,68 +1,166 @@
 import express from "express";
-import pool from "../db.js";
-import { authMiddleware } from "../middleware/auth.js";
+import jwt from "jsonwebtoken";
+import { pool } from "../db.js";
 
 const router = express.Router();
 
-/**
- * 리뷰 작성
- */
-router.post("/", authMiddleware, async (req, res) => {
+/** 토큰 있으면 user 넣어주기(없으면 그냥 통과) */
+function optionalUser(req, _res, next) {
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith("Bearer ")) return next();
   try {
-    const { movieId, rating, content, spoiler } = req.body;
-    const userId = req.user.id;
+    const token = auth.slice(7);
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    // 토큰 깨져도 비로그인으로 처리
+  }
+  next();
+}
 
-    await pool.query(
-      `INSERT INTO reviews (movie_id, user_id, rating, content, is_spoiler)
-       VALUES (?, ?, ?, ?, ?)`,
-      [movieId, userId, rating, content, spoiler]
+/** 토큰 필수 */
+function requireUser(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "로그인이 필요합니다." });
+  }
+  try {
+    const token = auth.slice(7);
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ message: "토큰이 유효하지 않습니다." });
+  }
+}
+
+/**
+ * GET /reviews/:movieId
+ * - like_count, liked(내가 눌렀는지), tags(스포일러 태그들) 포함
+ */
+router.get("/:movieId", optionalUser, async (req, res) => {
+  const movieId = Number(req.params.movieId);
+  const myId = req.user?.id || null;
+
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT
+        r.id,
+        r.movie_id,
+        r.user_id,
+        u.nickname AS username,
+        r.rating,
+        r.content,
+        r.is_spoiler,
+        r.created_at,
+        COUNT(DISTINCT rl.id) AS like_count,
+        MAX(CASE WHEN rl.user_id = ? THEN 1 ELSE 0 END) AS liked,
+        GROUP_CONCAT(DISTINCT t.name ORDER BY t.id SEPARATOR ',') AS tags
+      FROM reviews r
+      JOIN users u ON r.user_id = u.id
+      LEFT JOIN review_likes rl ON rl.review_id = r.id
+      LEFT JOIN review_tags rt ON rt.review_id = r.id
+      LEFT JOIN tags t ON t.id = rt.tag_id
+      WHERE r.movie_id = ?
+      GROUP BY r.id
+      ORDER BY r.created_at DESC
+      `,
+      [myId, movieId]
     );
 
-    res.status(201).json({ success: true });
+    // liked를 0/1 숫자로 보정
+    const result = rows.map((x) => ({
+      ...x,
+      liked: Number(x.liked) === 1,
+      like_count: Number(x.like_count) || 0,
+      tags: x.tags ? x.tags.split(",") : [],
+    }));
+
+    res.json(result);
   } catch (err) {
-    console.error("❌ REVIEW INSERT ERROR:", err);
-    res.status(500).json({ success: false });
+    console.error("REVIEWS GET ERROR:", err);
+    res.status(500).json({ message: "리뷰 조회 실패" });
   }
 });
 
 /**
- * 영화별 리뷰 조회
+ * POST /reviews
+ * body: { movie_id, rating, content, is_spoiler, tag_ids: number[] }
  */
-router.get("/:movieId", async (req, res) => {
+router.post("/", requireUser, async (req, res) => {
+  const { movie_id, rating, content, is_spoiler, tag_ids } = req.body;
+  const user_id = req.user.id;
+
   try {
-    const { movieId } = req.params;
+    const [result] = await pool.query(
+      `
+      INSERT INTO reviews (movie_id, user_id, rating, content, is_spoiler)
+      VALUES (?, ?, ?, ?, ?)
+      `,
+      [movie_id, user_id, rating, content, is_spoiler ? 1 : 0]
+    );
 
-    const [rows] = await pool.query(
-      `SELECT 
-         r.id,
-         r.movie_id,
-         r.user_id,      
-         r.rating,
-         r.content,
-         r.is_spoiler,
-         r.created_at,
-         u.nickname,
-          COUNT(rl.id) AS like_count
-       FROM reviews r
-       JOIN users u ON r.user_id = u.id
-       LEFT JOIN review_likes rl ON r.id = rl.review_id
-       WHERE r.movie_id = ?
-       GROUP BY r.id
-       ORDER BY r.created_at DESC`,
-      [movieId]
-);
+    const reviewId = result.insertId;
 
+    // 스포일러 체크된 경우에만 태그 저장
+    if (is_spoiler && Array.isArray(tag_ids) && tag_ids.length > 0) {
+      const values = tag_ids.map((tid) => [reviewId, tid]);
+      await pool.query(
+        "INSERT INTO review_tags (review_id, tag_id) VALUES ?",
+        [values]
+      );
+    }
 
-    res.json(rows);
+    res.status(201).json({ success: true, id: reviewId });
   } catch (err) {
-    console.error("❌ REVIEW SELECT ERROR:", err);
-    res.status(500).json([]);
+    console.error("REVIEWS POST ERROR:", err);
+    res.status(500).json({ message: "리뷰 작성 실패" });
   }
 });
 
-// 리뷰 삭제 (작성자만)
-router.delete("/:id", authMiddleware, async (req, res) => {
-  const reviewId = req.params.id;
+/**
+ * PUT /reviews/:id  (본인만)
+ * body: { rating, content, is_spoiler, tag_ids }
+ */
+router.put("/:id", requireUser, async (req, res) => {
+  const reviewId = Number(req.params.id);
+  const userId = req.user.id;
+  const { rating, content, is_spoiler, tag_ids } = req.body;
+
+  try {
+    const [own] = await pool.query("SELECT user_id FROM reviews WHERE id = ?", [
+      reviewId,
+    ]);
+    if (own.length === 0) return res.status(404).json({ message: "리뷰 없음" });
+    if (own[0].user_id !== userId)
+      return res.status(403).json({ message: "권한 없음" });
+
+    await pool.query(
+      "UPDATE reviews SET rating=?, content=?, is_spoiler=? WHERE id=?",
+      [rating, content, is_spoiler ? 1 : 0, reviewId]
+    );
+
+    // 태그는 일단 싹 지우고 재삽입(가장 안전)
+    await pool.query("DELETE FROM review_tags WHERE review_id = ?", [reviewId]);
+    if (is_spoiler && Array.isArray(tag_ids) && tag_ids.length > 0) {
+      const values = tag_ids.map((tid) => [reviewId, tid]);
+      await pool.query(
+        "INSERT INTO review_tags (review_id, tag_id) VALUES ?",
+        [values]
+      );
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("REVIEWS PUT ERROR:", err);
+    res.status(500).json({ message: "리뷰 수정 실패" });
+  }
+});
+
+/**
+ * DELETE /reviews/:id (본인만)
+ */
+router.delete("/:id", requireUser, async (req, res) => {
+  const reviewId = Number(req.params.id);
   const userId = req.user.id;
 
   try {
@@ -70,50 +168,55 @@ router.delete("/:id", authMiddleware, async (req, res) => {
       "DELETE FROM reviews WHERE id = ? AND user_id = ?",
       [reviewId, userId]
     );
-
-    if (result.affectedRows === 0) {
+    if (result.affectedRows === 0)
       return res.status(403).json({ message: "권한 없음" });
-    }
-
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false });
+    console.error("REVIEWS DELETE ERROR:", err);
+    res.status(500).json({ message: "리뷰 삭제 실패" });
   }
 });
 
-// 좋아요 토글
-router.post("/:id/like", authMiddleware, async (req, res) => {
-  const reviewId = req.params.id;
+/**
+ * POST /reviews/:id/like
+ * - 토글
+ * - 결과로 {liked, like_count} 내려줌 (프론트 즉시 반영 가능)
+ */
+router.post("/:id/like", requireUser, async (req, res) => {
+  const reviewId = Number(req.params.id);
   const userId = req.user.id;
 
   try {
     const [rows] = await pool.query(
-      "SELECT id FROM review_likes WHERE review_id = ? AND user_id = ?",
+      "SELECT id FROM review_likes WHERE review_id=? AND user_id=?",
       [reviewId, userId]
     );
 
+    let liked;
     if (rows.length > 0) {
-      // 이미 좋아요 → 취소
       await pool.query(
-        "DELETE FROM review_likes WHERE review_id = ? AND user_id = ?",
+        "DELETE FROM review_likes WHERE review_id=? AND user_id=?",
         [reviewId, userId]
       );
+      liked = false;
     } else {
-      // 좋아요 추가
       await pool.query(
         "INSERT INTO review_likes (review_id, user_id) VALUES (?, ?)",
         [reviewId, userId]
       );
+      liked = true;
     }
 
-    res.json({ success: true });
+    const [[cnt]] = await pool.query(
+      "SELECT COUNT(*) AS like_count FROM review_likes WHERE review_id=?",
+      [reviewId]
+    );
+
+    res.json({ success: true, liked, like_count: Number(cnt.like_count) });
   } catch (err) {
-    console.error("좋아요 오류:", err);
-    res.status(500).json({ success: false });
+    console.error("LIKE TOGGLE ERROR:", err);
+    res.status(500).json({ message: "좋아요 실패" });
   }
 });
-
-
 
 export default router;

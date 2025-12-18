@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ReviewSection.module.css";
 
 export default function ReviewForm({ movieId, onSuccess }) {
@@ -6,7 +6,23 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [content, setContent] = useState("");
   const [spoiler, setSpoiler] = useState(false);
 
-  const submit = async () => {
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/tags")
+      .then((res) => res.json())
+      .then(setTags)
+      .catch(console.error);
+  }, []);
+
+  const toggleTag = (id) => {
+    setSelectedTags((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return alert("로그인이 필요합니다.");
@@ -18,60 +34,54 @@ export default function ReviewForm({ movieId, onSuccess }) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        movieId,
+        movie_id: movieId,
         rating,
         content,
-        spoiler,
+        is_spoiler: spoiler,
+        tag_ids: spoiler ? selectedTags : [],
       }),
     });
 
     setContent("");
     setRating(5);
     setSpoiler(false);
-    onSuccess();
-  };
+    setSelectedTags([]);
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("리뷰 작성 클릭됨");
+    if (typeof onSuccess === "function") onSuccess();
   };
-
 
   return (
-    <div className={styles.writeCard}>
-      <div className={styles.ratingBox}>
-<div className={styles.ratingWrapper}>
-  <span className={styles.ratingText}>별점: </span>
+    <form onSubmit={handleSubmit}>
+      {/* 별점 라인 */}
+      <div className={styles.ratingInner}>
+        <span className={styles.ratingText}>별점:</span>
 
-  <select
-    className={styles.ratingSelect}
-    value={rating}
-    onChange={(e) => setRating(Number(e.target.value))}
-  >
-    <option value={5}>★★★★★</option>
-    <option value={4}>★★★★☆</option>
-    <option value={3}>★★★☆☆</option>
-    <option value={2}>★★☆☆☆</option>
-    <option value={1}>★☆☆☆☆</option>
-  </select>
-</div>
-
-</div>
-
+        <select
+          className={styles.ratingSelect}
+          value={rating}
+          onChange={(e) => setRating(Number(e.target.value))}
+        >
+          <option value={5}>★★★★★ 5점</option>
+          <option value={4}>★★★★☆ 4점</option>
+          <option value={3}>★★★☆☆ 3점</option>
+          <option value={2}>★★☆☆☆ 2점</option>
+          <option value={1}>★☆☆☆☆ 1점</option>
+        </select>
+      </div>
 
       <textarea
         className={styles.textarea}
-        placeholder="리뷰를 작성하세요"
         value={content}
-        onChange={e => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="영화 리뷰를 작성해주세요..."
       />
 
       <div className={styles.writeFooter}>
-        <label>
+        <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <input
             type="checkbox"
             checked={spoiler}
-            onChange={e => setSpoiler(e.target.checked)}
+            onChange={(e) => setSpoiler(e.target.checked)}
           />
           스포일러 포함
         </label>
@@ -80,6 +90,22 @@ export default function ReviewForm({ movieId, onSuccess }) {
           리뷰 작성
         </button>
       </div>
-    </div>
+
+      {/* 스포일러일 때만 태그 */}
+      {spoiler && (
+        <div className={styles.tagBox}>
+          {tags.map((t) => (
+            <button
+              type="button"
+              key={t.id}
+              className={`${styles.tag} ${selectedTags.includes(t.id) ? styles.tagActive : ""}`}
+              onClick={() => toggleTag(t.id)}
+            >
+              #{t.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </form>
   );
 }

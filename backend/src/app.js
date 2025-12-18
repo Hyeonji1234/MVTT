@@ -1,20 +1,33 @@
 import express from "express";
 import cors from "cors";
+import morgan from "morgan";
 import dotenv from "dotenv";
 
 import authRouter from "./routes/auth.js";
 import reviewsRouter from "./routes/reviews.js";
+import tagsRouter from "./routes/tags.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(morgan("dev"));
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+app.get("/", (_req, res) => res.send("SPO Backend OK"));
 
 app.use("/auth", authRouter);
 app.use("/reviews", reviewsRouter);
+app.use("/tags", tagsRouter);
 
-app.listen(4000, () => {
-  console.log("✅ Backend running on http://localhost:4000");
+const PORT = Number(process.env.PORT || 4000);
+app.listen(PORT, () => {
+  console.log(`✅ Backend running on http://localhost:${PORT}`);
 });
