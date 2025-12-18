@@ -30,7 +30,8 @@ export default function Login() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
+      localStorage.setItem("userId", data.user.id);
+      
       router.push("/");
     } catch (err) {
       setError("서버 연결 실패(백엔드 실행 상태 확인)");

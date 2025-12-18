@@ -55,21 +55,20 @@ export const getReviewsByMovie = async (req, res) => {
 
   const [reviews] = await db.query(
     `
-    SELECT 
+    SELECT
       r.id,
+      r.movie_id,
+      r.user_id,          
+      r.rating,
       r.content,
       r.is_spoiler,
       r.created_at,
-      u.nickname,
-      COUNT(rl.id) AS likeCount
+      u.nickname
     FROM reviews r
     JOIN users u ON r.user_id = u.id
-    LEFT JOIN review_likes rl ON rl.review_id = r.id
     WHERE r.movie_id = ?
-    GROUP BY r.id
     ORDER BY r.created_at DESC
-    `,
-    [movieId]
+    `,[movieId]
   );
 
   res.json(reviews);

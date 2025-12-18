@@ -199,3 +199,20 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.like {
+  background: transparent;
+  border: 1px solid #ff2f2f;
+  color: #ff2f2f;
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.like:hover {
+  background: rgba(255, 47, 47, 0.1);
+}

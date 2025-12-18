@@ -1,21 +1,25 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
       setUser(JSON.parse(stored));
+    } else {
+      setUser(null);
     }
-  }, []);
+  }, [router.pathname]); // 🔥 핵심: 경로 변경 시 재실행
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    location.href = "/";
+    router.push("/");
   };
 
   return (

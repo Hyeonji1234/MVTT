@@ -7,6 +7,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [spoiler, setSpoiler] = useState(false);
 
   const submit = async () => {
+    e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return alert("로그인이 필요합니다.");
 
@@ -29,6 +30,12 @@ export default function ReviewForm({ movieId, onSuccess }) {
     setSpoiler(false);
     onSuccess();
   };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("리뷰 작성 클릭됨");
+  };
+
 
   return (
     <div className={styles.writeCard}>
@@ -69,7 +76,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
           스포일러 포함
         </label>
 
-        <button className={styles.submit} onClick={submit}>
+        <button type="submit" className={styles.submit}>
           리뷰 작성
         </button>
       </div>
