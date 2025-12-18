@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { pool } from "../db.js";
+import pool from "../db.js";
 
 import cors from "cors";
 
