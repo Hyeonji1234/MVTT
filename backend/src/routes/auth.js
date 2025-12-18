@@ -3,7 +3,13 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { pool } from "../db.js";
 
+import cors from "cors";
+
 const router = express.Router();
+
+/* ⭐ 이 두 줄이 핵심 */
+router.use(cors());
+router.options("*", cors());
 
 const signToken = (user) => {
   const payload = { id: user.id, email: user.email, nickname: user.nickname };
@@ -11,6 +17,7 @@ const signToken = (user) => {
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 };
+
 
 // ✅ 회원가입
 router.post("/signup", async (req, res) => {
