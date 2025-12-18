@@ -3,11 +3,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const { reviewId } = req.query;
+  const { movieId } = req.query;
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${reviewId}/like`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/${movieId}/like`,
       {
         method: "POST",
         headers: {
