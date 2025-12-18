@@ -1,11 +1,25 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import Header from "../../components/Header";
 import ReviewSection from "../../components/review/ReviewSection";
 import styles from "../../styles/MovieDetail.module.css";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+const YoutubeFrame = dynamic(
+  () =>
+    Promise.resolve(({ videoKey }) => (
+      <iframe
+        className={styles.trailerFrame}
+        src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1`}
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+      />
+    )),
+  { ssr: false }
+);
 
 export default function MovieDetail() {
   const router = useRouter();
@@ -103,13 +117,7 @@ export default function MovieDetail() {
                 ))}
               </div>
 
-              <iframe
-                key={videos[activeIndex].key}
-                className={styles.trailerFrame}
-                src={`https://www.youtube.com/embed/${videos[activeIndex].key}?autoplay=1&mute=1`}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
+              <YoutubeFrame videoKey={videos[activeIndex].key} />
             </>
           ) : (
             <p className={styles.empty}>예고편이 없습니다.</p>
