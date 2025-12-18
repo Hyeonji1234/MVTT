@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import authRouter from "./routes/auth.js";
 import reviewsRouter from "./routes/reviews.js";
 import tagsRouter from "./routes/tags.js";
+import moviesRouter from "./routes/movies.js";
 
 import pool from "./db.js";
 
@@ -34,6 +35,7 @@ app.get("/", (_req, res) => res.send("SPO Backend OK"));
 app.use("/auth", authRouter);
 app.use("/reviews", reviewsRouter);
 app.use("/tags", tagsRouter);
+app.use("/movies", moviesRouter);
 
 const PORT = Number(process.env.PORT || 4000);
 app.listen(PORT, () => {

@@ -1,4 +1,5 @@
 import styles from "./SpoilerPage.module.css";
+import Link from "next/link";
 
 export default function SpoilerCard({ review }) {
   return (
@@ -8,9 +9,14 @@ export default function SpoilerCard({ review }) {
       }`}
     >
       {/* 🎬 영화 제목 */}
-      <div className={styles.movieTitle}>
-        {review.movie_title}
-      </div>
+      <Link
+        href={`/movie/${review.movie_id}`}
+        className={styles.movieLink}
+      >
+        <div className={styles.movieTitle}>
+          {review.movie_title}
+        </div>
+      </Link> 
 
       {/* 작성자 + 날짜 */}
       <div className={styles.meta}>

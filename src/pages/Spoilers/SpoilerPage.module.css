@@ -56,3 +56,13 @@
   line-height: 1.5;
 }
 
+.movieTitle:hover {
+  color: #e50914;
+  text-decoration: none;
+}
+.movieLink {
+  text-decoration: none;   /* ⭐ 핵심 */
+  color: inherit;          /* 부모 색상 그대로 */
+}
+
+
