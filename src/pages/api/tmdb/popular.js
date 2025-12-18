@@ -1,5 +1,6 @@
 export default async function handler(req, res) {
     const apiKey = process.env.TMDB_API_KEY;
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const popularRes = await fetch(
         `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR`

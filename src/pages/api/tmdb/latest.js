@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default async function handler(req, res) {
   try {

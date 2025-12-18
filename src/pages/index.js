@@ -3,6 +3,8 @@ import HeroBanner from "../components/HeroBanner";
 import MovieGrid from "../components/MovieGrid";
 import SpoilerWarningModal from "../components/SpoilerWarningModal";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function Home() {
   const [heroMovies, setHeroMovies] = useState([]);
   const [movies, setMovies] = useState([]);

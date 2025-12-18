@@ -1,4 +1,5 @@
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default async function handler(req, res) {
   const { id } = req.query;

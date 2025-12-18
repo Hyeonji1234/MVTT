@@ -5,6 +5,8 @@ import Header from "../../components/Header";
 import ReviewSection from "../../components/review/ReviewSection";
 import styles from "../../styles/MovieDetail.module.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function MovieDetail() {
   const router = useRouter();
   const { id } = router.query;
