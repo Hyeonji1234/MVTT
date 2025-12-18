@@ -22,7 +22,7 @@ export default function MovieGrid({ movies }) {
                 <div style={title}>{m.title}</div>
 
                 <div style={meta}>
-                  <span style={rating}>★ {m.vote_average.toFixed(1)}</span>
+                  <span style={rating}>★ {(m?.vote_average ?? 0).toFixed(1)}</span>
                   <span style={year}>{m.release_date?.slice(0, 4)}</span>
                 </div>
               </div>

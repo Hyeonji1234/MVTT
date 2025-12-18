@@ -66,7 +66,9 @@ export default function MovieDetail() {
               <h1 className={styles.title}>{movie.title}</h1>
 
               <div className={styles.meta}>
-                <span className={styles.star}>★ {movie.vote_average.toFixed(1)}</span>
+                <span className={styles.star}>
+                  ★ {(movie?.vote_average ?? 0).toFixed(1)}
+                </span>
                 <span>{movie.release_date}</span>
                 <span>{movie.runtime}분</span>
               </div>
