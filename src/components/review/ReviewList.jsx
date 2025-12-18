@@ -18,7 +18,7 @@ export default function ReviewList({
 
     const token = localStorage.getItem("token");
 
-    fetch(`${API_BASE}/reviews/${movieId}`, {
+    fetch(`/api/reviews/${movieId}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
       .then((res) => res.json())
@@ -26,9 +26,9 @@ export default function ReviewList({
         setReviews(data);
         if (typeof onCountChange === "function") {
           onCountChange(data.length);
-        }
-      })
-      .catch(console.error);
+      }
+    })
+  .catch(console.error);
   }, [movieId, refresh, onCountChange]);
 
   // ✅ 필터 로직 (핵심)

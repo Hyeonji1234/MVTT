@@ -10,11 +10,12 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/tags`)
+    fetch("/api/tags")
       .then((res) => res.json())
       .then(setTags)
       .catch(console.error);
   }, []);
+
 
   const toggleTag = (id) => {
     setSelectedTags((prev) =>
@@ -27,20 +28,21 @@ export default function ReviewForm({ movieId, onSuccess }) {
     const token = localStorage.getItem("token");
     if (!token) return alert("로그인이 필요합니다.");
 
-    await fetch(`${API_BASE}/reviews`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        movie_id: movieId,
-        rating,
-        content,
-        is_spoiler: spoiler,
-        tag_ids: spoiler ? selectedTags : [],
-      }),
-    });
+  await fetch("/api/reviews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({
+    movie_id: movieId,
+    rating,
+    content,
+    is_spoiler: spoiler,
+    tag_ids: spoiler ? selectedTags : [],
+  }),
+});
+
 
     setContent("");
     setRating(5);
