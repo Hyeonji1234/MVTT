@@ -1,4 +1,4 @@
-const API_BASE = process.env.API_BASE_URL; // 🔴 변경
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
