@@ -5,6 +5,7 @@ export default async function handler(req, res) {
 
   try {
     const headers = {};
+
     if (req.headers.authorization) {
       headers.Authorization = req.headers.authorization;
     }
@@ -15,8 +16,8 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    res.status(response.status).json(data);
+    return res.status(response.status).json(data);
   } catch (e) {
-    res.status(500).json({ message: "Tags proxy error" });
+    return res.status(500).json({ message: "Tags proxy error" });
   }
 }
