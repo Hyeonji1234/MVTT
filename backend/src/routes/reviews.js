@@ -46,6 +46,7 @@ router.get("/spoilers", optionalUser, async (req, res) => {
       SELECT
         r.id,
         r.movie_id,
+        m.title AS movie_title,
         r.user_id,
         u.nickname AS username,
         r.rating,
@@ -57,10 +58,11 @@ router.get("/spoilers", optionalUser, async (req, res) => {
         GROUP_CONCAT(DISTINCT t.name ORDER BY t.id SEPARATOR ',') AS tags
       FROM reviews r
       JOIN users u ON r.user_id = u.id
+      LEFT JOIN movies m ON r.movie_id = m.id
       LEFT JOIN review_likes rl ON rl.review_id = r.id
       LEFT JOIN review_tags rt ON rt.review_id = r.id
       LEFT JOIN tags t ON t.id = rt.tag_id
-      WHERE r.is_spoiler = 1
+      WHERE r.is_spoiler = 1 OR r.is_spoiler = true
       GROUP BY r.id
       ORDER BY r.created_at DESC
       LIMIT 50
@@ -90,13 +92,17 @@ router.get("/:movieId", optionalUser, async (req, res) => {
   const movieId = Number(req.params.movieId);
   const myId = req.user?.id || null;
 
+  if (Number.isNaN(movieId)) {
+    return res.status(400).json([]);
+  }
+
   try {
     const [rows] = await pool.query(
       `
       SELECT
         r.id,
         r.movie_id,
-        m.title AS movie_title,   -- ⭐ 추가
+        m.title AS movie_title,   
         r.user_id,
         u.nickname AS username,
         r.rating,
@@ -106,18 +112,17 @@ router.get("/:movieId", optionalUser, async (req, res) => {
         COUNT(DISTINCT rl.id) AS like_count,
         MAX(CASE WHEN rl.user_id = ? THEN 1 ELSE 0 END) AS liked,
         GROUP_CONCAT(DISTINCT t.name ORDER BY t.id SEPARATOR ',') AS tags
-      FROM reviews r
-      JOIN movies m ON r.movie_id = m.id      -- ⭐ 추가
+      FROM reviews r      
       JOIN users u ON r.user_id = u.id
+      LEFT JOIN movies m ON r.movie_id = m.id
       LEFT JOIN review_likes rl ON rl.review_id = r.id
       LEFT JOIN review_tags rt ON rt.review_id = r.id
       LEFT JOIN tags t ON t.id = rt.tag_id
-      WHERE r.is_spoiler = 1
+      WHERE r.movie_id = ?
       GROUP BY r.id
       ORDER BY r.created_at DESC
-      LIMIT 50
       `,
-      [myId, movieId]
+      [req.user?.id ?? null, movieId]
     );
 
     // liked를 0/1 숫자로 보정
@@ -133,6 +138,14 @@ router.get("/:movieId", optionalUser, async (req, res) => {
     console.error("REVIEWS GET ERROR:", err);
     res.status(500).json({ message: "리뷰 조회 실패" });
   }
+});
+
+router.get("/__debug__", async (req, res) => {
+  const [rows] = await pool.query(
+    "SELECT id, movie_id, is_spoiler FROM reviews"
+  );
+  console.log("🔥 SERVER REVIEWS:", rows);
+  res.json(rows);
 });
 
 /**

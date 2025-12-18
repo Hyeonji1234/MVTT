@@ -7,6 +7,13 @@ import authRouter from "./routes/auth.js";
 import reviewsRouter from "./routes/reviews.js";
 import tagsRouter from "./routes/tags.js";
 
+import pool from "./db.js";
+
+(async () => {
+  const [rows] = await pool.query("SELECT DATABASE() AS db");
+  console.log("✅ CONNECTED DB:", rows[0].db);
+})();
+
 dotenv.config();
 
 const app = express();

@@ -1,3 +1,5 @@
+import pool from "../../../../backend/src/db.js";
+
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 export default async function handler(req, res) {
