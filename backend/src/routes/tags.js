@@ -1,16 +1,20 @@
+const API_BASE = process.env.API_BASE_URL; // 🔴 변경
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags`
-    );
+    const response = await fetch(`${API_BASE}/tags`);
+
+    if (!response.ok) {
+      return res.status(response.status).json([]);
+    }
 
     const data = await response.json();
-    return res.status(response.status).json(data);
+    return res.status(200).json(Array.isArray(data) ? data : []);
   } catch (e) {
-    return res.status(500).json({ message: "Tags proxy error" });
+    return res.status(200).json([]); 
   }
 }
