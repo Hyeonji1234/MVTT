@@ -9,17 +9,26 @@ export default function ReviewForm({ movieId, onSuccess }) {
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
 
-  useEffect(() => {
-    if (!spoiler) return;
 
-    fetch("/api/tags")
-      .then(res => res.json())
+  useEffect(() => {
+    // ✅ 스포일러 체크 해제 시 태그/선택값 초기화 (버그 예방)
+    if (!spoiler) {
+      setTags([]);
+      setSelectedTags([]);
+      return;
+    }
+
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+    fetch(`${API_BASE}/tags`)
+      .then((res) => res.json())
       .then((data) => {
         console.log("태그 응답:", data);
         setTags(Array.isArray(data) ? data : []);
-    })
-    .catch(console.error);
+      })
+      .catch(console.error);
   }, [spoiler]);
+
 
 
 
