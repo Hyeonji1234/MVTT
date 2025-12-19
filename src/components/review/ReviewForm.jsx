@@ -118,8 +118,8 @@ export default function ReviewForm({ movieId, onSuccess }) {
               <button
                 key={t.id}
                 type="button"
-                className={styles.tagBtn}
-                aria-pressed={selectedTags.includes(t.id)}
+                className={styles.spoilerTag}
+                style={{ cursor: "pointer" }}
                 onClick={() => toggleTag(t.id)}
               >
                 #{t.name}
