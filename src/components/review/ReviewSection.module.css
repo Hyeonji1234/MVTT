@@ -170,27 +170,44 @@
 
 /* ✅ 스포일러 블러 */
 .spoiler {
-  position: relative;
-  color: transparent;
-  text-shadow: 0 0 8px rgba(255,255,255,0.4);
-  cursor: pointer;
+  position:relative;
+  overflow:hidden;
+  border-radius:10px;
+}
+
+.spoiler .review-comment,
+.spoiler .locked-review{
+  filter:blur(7px);
+  opacity:.32;
+  pointer-events:none;
+  transition:.35s;
 }
 
 /* 오버레이 */
 .spoiler::after {
-  content: "스포일러 보기";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #e50914;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 6px;
+  content:"스포일러 보기";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:600;
+  font-size:15px;
+  border-radius:10px;
+  text-shadow:0 0 8px rgba(255,255,255,.7);
+  cursor:pointer;
+  transition:.35s;
 }
+
+.spoiler.open::after{
+  opacity:0;pointer-events:none;
+}
+
+.spoiler.open .review-comment,
+.spoiler.open .locked-review{
+  filter:none;opacity:1;pointer-events:auto;
+}
+
 
 /* 좋아요/수정/삭제 */
 .actions {
