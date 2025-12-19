@@ -110,7 +110,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
 
       {/* 스포일러일 때만 태그 */}
       {spoiler && (
-        <div className={styles.tagBox}>
+        <div className={styles.spoilerTags}>
           {tags.length === 0 ? (
             <span className={styles.empty}>선택 가능한 태그 없음</span>
           ) : (
