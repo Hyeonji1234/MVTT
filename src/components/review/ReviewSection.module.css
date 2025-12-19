@@ -172,7 +172,6 @@
 .spoiler {
   position:relative;
   overflow:hidden;
-  border-radius:10px;
 }
 
 .spoiler .review-comment,
