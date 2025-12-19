@@ -33,18 +33,21 @@ export default function ReviewList({
 
   // ✅ 필터 로직 (핵심)
   const filteredReviews = reviews.filter((r) => {
-    // 1️⃣ 전체 / 스포일러 / 일반
-    if (filter === "spoiler" && r.is_spoiler !== true) return false;
-    if (filter === "normal" && r.is_spoiler !== false) return false;
+  const isSpoiler = Number(r.is_spoiler) === 1;
 
-    // 2️⃣ 태그 필터 (선택됐을 때만)
-    if (selectedTag) {
-      if (!Array.isArray(r.tags)) return false;
-      if (!r.tags.includes(selectedTag)) return false;
-    }
+  // 1️⃣ 탭 필터
+  if (filter === "spoiler" && !isSpoiler) return false;
+  if (filter === "normal" && isSpoiler) return false;
 
-    return true;
+  // 2️⃣ 태그 필터
+  if (selectedTag) {
+    if (!Array.isArray(r.tags)) return false;
+    if (!r.tags.includes(selectedTag)) return false;
+  }
+
+  return true;
   });
+
 
   if (!filteredReviews.length) {
     return (
