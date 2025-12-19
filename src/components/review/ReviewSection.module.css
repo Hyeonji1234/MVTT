@@ -291,6 +291,46 @@
   color: #fff;
 }
 
+/* 스포일러 체크박스 래퍼 */
+.spoilerCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #ccc;
+}
+
+/* 기본 체크박스 숨김 */
+.spoilerCheck input {
+  display: none;
+}
+
+/* 커스텀 체크 UI */
+.spoilerCheck span {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #1f1f1f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* 체크됐을 때 */
+.spoilerCheck input:checked + span {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+.spoilerCheck input:checked + span::after {
+  content: "✓";
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+}
 
 
 
