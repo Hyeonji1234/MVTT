@@ -170,21 +170,26 @@
 
 /* ✅ 스포일러 블러 */
 .spoiler {
-  filter: blur(6px);
-  user-select: none;
-  cursor: pointer;
   position: relative;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4);
+  cursor: pointer;
 }
 
+/* 오버레이 */
 .spoiler::after {
   content: "스포일러 보기";
   position: absolute;
   inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #e50914;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
 }
 
 /* 좋아요/수정/삭제 */
