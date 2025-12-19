@@ -118,8 +118,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
               <button
                 key={t.id}
                 type="button"
-                className={styles.tagBtn}
-                aria-pressed={selectedTags.includes(t.id)}
+                className={`${styles.tag} ${selectedTags.includes(t.id) ? styles.tagActive : ""}`}
                 onClick={() => toggleTag(t.id)}
               >
                 #{t.name}

@@ -291,28 +291,7 @@
   color: #fff;
 }
 
-/* 선택된 태그 (aria 기반) */
-.tag[aria-pressed="true"] {
-  background: #e50914;
-  border-color: #e50914;
-  color: #fff;
-}
 
-button.tag {
-  padding: 4px 10px;
-  border-radius: 12px;
-  border: 1px solid #444;
-  color: #aaa;
-  background: transparent;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-button.tag[aria-pressed="true"] {
-  background: #e50914;
-  border-color: #e50914;
-  color: #fff;
-}
 
 
 
