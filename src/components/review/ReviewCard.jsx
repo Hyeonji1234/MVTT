@@ -121,20 +121,13 @@ export default function ReviewCard({
 
       {!editing ? (
         <div
-          className={`${styles.reviewBody} ${
+          className={`${styles.reviewContent} ${
             review.is_spoiler && !showSpoiler ? styles.spoiler : ""
           }`}
           onClick={() => review.is_spoiler && setShowSpoiler(true)}
           title={review.is_spoiler && !showSpoiler ? "클릭하면 스포일러를 볼 수 있어요" : ""}
         >
-          <div className={styles.spoilerOverlay}>
           {review.content}
-        </div>
-        {review.is_spoiler && !showSpoiler && (
-            <div className={styles.spoilerOverlay}>
-              스포일러 보기
-            </div>
-          )}
         </div>
       ) : (
         <>

@@ -169,11 +169,10 @@
 }
 
 /* ✅ 스포일러 블러 */
-
 .spoiler {
-  filter: blur(6px);
-  pointer-events: none;
-  user-select: none;
+  position:relative;
+  overflow:hidden;
+  border-radius:10px;
 }
 
 .spoiler .review-comment,
@@ -216,31 +215,6 @@
   pointer-events: none;
   transition: all 0.35s ease;
 }
-/* 리뷰 본문 wrapper */
-.reviewBody {
-  position: relative;
-  margin-top: 12px;
-}
-
-/* 스포일러 오버레이 */
-.spoilerOverlay {
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-
-  border-radius: 10px;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
 
 
 /* 좋아요/수정/삭제 */
