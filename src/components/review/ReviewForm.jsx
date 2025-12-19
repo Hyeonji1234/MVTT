@@ -119,6 +119,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
                 key={t.id}
                 type="button"
                 onClick={() => toggleTag(t.id)}
+                className={`${styles.tag} ${active ? styles.tagActive : ""}`}
               >
                 #{t.name}
               </button>
