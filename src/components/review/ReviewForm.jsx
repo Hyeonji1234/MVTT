@@ -110,15 +110,16 @@ export default function ReviewForm({ movieId, onSuccess }) {
 
       {/* 스포일러일 때만 태그 */}
       {spoiler && (
-        <div className={styles.spoilerTags}>
+        <div className={styles.tagBox}>
           {tags.length === 0 ? (
             <span className={styles.empty}>선택 가능한 태그 없음</span>
           ) : (
             tags.map((t) => (
               <button
                 key={t.id}
-                className={styles.spoilerTag}
-                style={{ cursor: "pointer" }}
+                type="button"
+                className={styles.tagBtn}
+                aria-pressed={selectedTags.includes(t.id)}
                 onClick={() => toggleTag(t.id)}
               >
                 #{t.name}
