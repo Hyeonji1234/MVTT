@@ -187,10 +187,15 @@
 .spoiler::after {
   content:"스포일러 보기";
   position:absolute;
-  inset:0;
+  left: -18px;
+  right: -18px;
+  top:-14px;
+  bottom:-60px;
   background:rgba(0,0,0,.5);
   backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   color:#fff;font-weight:600;
   font-size:15px;
   border-radius:3px;
