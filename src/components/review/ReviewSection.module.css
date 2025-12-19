@@ -281,20 +281,20 @@
 }
 
 .tagBtn:hover {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
+  border-color: #e50914;
+  color: #e50914;
 }
 
 .activeTag {
-  background: #ff6b6b;
-  border-color: #ff6b6b;
+  background: #e50914;
+  border-color: #e50914;
   color: #fff;
 }
 
 /* 선택된 태그 (aria 기반) */
 .tag[aria-pressed="true"] {
-  background: #ff2d2d;
-  border-color: #ff2d2d;
+  background: #e50914;
+  border-color: #e50914;
   color: #fff;
 }
 
@@ -309,9 +309,10 @@ button.tag {
 }
 
 button.tag[aria-pressed="true"] {
-  background: #ff2d2d;
-  border-color: #ff2d2d;
+  background: #e50914;
+  border-color: #e50914;
   color: #fff;
 }
+
 
 
