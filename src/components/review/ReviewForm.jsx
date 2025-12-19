@@ -100,6 +100,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
             checked={spoiler}
             onChange={(e) => setSpoiler(e.target.checked)}
           />
+          <span></span>
           스포일러 포함
         </label>
 
