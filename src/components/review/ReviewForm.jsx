@@ -94,7 +94,7 @@ export default function ReviewForm({ movieId, onSuccess }) {
       />
 
       <div className={styles.writeFooter}>
-        <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <label className={styles.spoilerCheck}>
           <input
             type="checkbox"
             checked={spoiler}
