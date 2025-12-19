@@ -117,7 +117,6 @@ export default function ReviewForm({ movieId, onSuccess }) {
             tags.map((t) => (
               <button
                 key={t.id}
-                type="button"
                 className={styles.spoilerTag}
                 style={{ cursor: "pointer" }}
                 onClick={() => toggleTag(t.id)}
