@@ -188,12 +188,12 @@
   content:"스포일러 보기";
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.68);
+  background:rgba(0,0,0,.5);
   backdrop-filter:blur(4px);
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-weight:600;
   font-size:15px;
-  border-radius:10px;
+  border-radius:3px;
   text-shadow:0 0 8px rgba(255,255,255,.7);
   cursor:pointer;
   transition:.35s;
