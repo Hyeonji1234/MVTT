@@ -188,7 +188,7 @@
   content:"스포일러 보기";
   position:absolute;
   inset:0;
-  background:rgba(31,31,31,.35);
+  background:rgba(31,31,31,.7);
   backdrop-filter:blur(4px);
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-weight:600;
